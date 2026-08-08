@@ -56,10 +56,13 @@ from the old portfolio's public API into `cover-manifest.js`. The optimised
 output is committed, because that source could disappear.
 
 Videos are on YouTube rather than committed (271 MB in total); each entry
-carries a `youtube` link. One thing is still outstanding:
+carries a `youtube` link.
 
-- **`og:image`** in `index.html` is a relative path. Set it to an absolute URL
-  once the site has a domain — most link previews will not resolve a relative one.
+**If the site moves to a custom domain**, update the absolute URLs in
+`index.html` — `og:url`, `og:image`, `twitter:image` and `<link rel="canonical">`
+are hardcoded to the GitHub Pages address. They have to be absolute because
+link-preview scrapers do not resolve relative paths, and static because most
+do not run JavaScript, so the router cannot set them per route.
 
 ## Design system
 
