@@ -2,7 +2,7 @@ import { Icon } from "../core/Icon.jsx";
 
 /** Figure frame: renders an image when `src` is supplied, otherwise a labelled
  *  drop slot naming the file that belongs there. */
-export function MediaFrame({ src, alt, caption, file, height = 320, style, ...rest }) {
+export function MediaFrame({ src, alt, caption, file, width, height = 320, imageHeight, style, ...rest }) {
   return (
     <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: "var(--space-3)", ...style }} {...rest}>
       {src ? (
@@ -10,8 +10,14 @@ export function MediaFrame({ src, alt, caption, file, height = 320, style, ...re
           src={src}
           alt={alt || caption || ""}
           loading="lazy"
+          /* Intrinsic size + `height: auto` reserves the right box before the
+             image loads, so a page of figures doesn't jump as they arrive. */
+          width={width}
+          height={imageHeight}
           style={{
             width: "100%",
+            height: "auto",
+            aspectRatio: width && imageHeight ? `${width} / ${imageHeight}` : undefined,
             display: "block",
             borderRadius: "var(--radius-card)",
             border: "1px solid var(--border-hairline)",

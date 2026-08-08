@@ -3,11 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Technical portfolio of Alec Stanley — aerospace engineering and astrophysics, Monash University.",
+  "description": "Technical portfolio of Alec Stanley \u2014 aerospace engineering and astrophysics, Monash University.",
   "scripts": {
     "dev": "vite",
+    "import-assets": "node scripts/import-assets.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check-media": "node scripts/check-media.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.363.0",

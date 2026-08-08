@@ -12,6 +12,7 @@ export { SectionHeading } from "./layout/SectionHeading.jsx";
 export { AttachmentLink } from "./content/AttachmentLink.jsx";
 export { Callout } from "./content/Callout.jsx";
 export { MediaFrame } from "./content/MediaFrame.jsx";
+export { PdfEmbed } from "./content/PdfEmbed.jsx";
 export { ProjectCard } from "./content/ProjectCard.jsx";
 export { SkillMeter } from "./content/SkillMeter.jsx";
 export { StatBlock } from "./content/StatBlock.jsx";

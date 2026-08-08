@@ -5,12 +5,18 @@
  * Project entries were recovered from the old Notion portfolio; bio, education
  * and employment come from the CV in `public/alec-stanley-cv.pdf`.
  *
- * Media slots: `images[].file`, `videos[].source` and `attachments[].file` name
- * the original export filename. A figure renders as a labelled drop slot until
- * you add `src` (image), `youtube` (video) or `href` (attachment). See MEDIA.md
- * for the full outstanding list.
+ * Media: `images[].file`, `videos[].source` and `attachments[].file` name the
+ * original export filename — that is the record of *what* the asset is. The
+ * URL is derived, not written by hand: `npm run import-assets` copies the file
+ * out of the Notion export and records it in `media-manifest.js`, and the
+ * `project()` factory below turns that into `src` / `href`.
+ *
+ * A file missing from the manifest simply gets no URL, so the page falls back
+ * to its labelled placeholder slot. Videos are deliberately not imported — set
+ * `youtube` on one by hand once it is uploaded. See MEDIA.md.
  */
 import { asset } from "../lib/asset.js";
+import MEDIA from "./media-manifest.js";
 
 export const PROFILE = {
   name: "Alec Stanley",
@@ -34,16 +40,28 @@ export const PROFILE = {
   lastUpdated: "2026-08",
 };
 
-const project = (o) => ({
-  status: { label: "Complete", tone: "ok" },
-  tags: [],
-  images: [],
-  videos: [],
-  attachments: [],
-  body: [],
-  ...o,
-  slug: o.id.toLowerCase(),
-});
+const project = (o) => {
+  const slug = o.id.toLowerCase();
+  const imported = MEDIA[slug] || {};
+  return {
+    status: { label: "Complete", tone: "ok" },
+    tags: [],
+    videos: [],
+    body: [],
+    ...o,
+    slug,
+    // After the spread, so an explicit `src` / `href` on an entry still wins.
+    images: (o.images || []).map((i) => {
+      const m = imported[i.file];
+      // Intrinsic size travels with the URL so <img> can reserve its box.
+      return { ...i, src: i.src ?? (m ? asset(m.path) : undefined), width: m?.w, height: m?.h };
+    }),
+    attachments: (o.attachments || []).map((a) => {
+      const m = imported[a.file];
+      return { ...a, href: a.href ?? (m ? asset(m.path) : undefined), pages: m?.pages };
+    }),
+  };
+};
 
 export const PROJECTS = [
   project({
@@ -276,7 +294,7 @@ export const PROJECTS = [
     date: "October 19, 2024",
     summary: "Demonstrating shock and expansion structures over a wedge airfoil in a supersonic tunnel.",
     tags: ["compressible flow", "shock waves", "wind tunnel"],
-    attachments: [{ label: "Full report", file: "report.pdf" }],
+    attachments: [{ label: "Full report", file: "WindTunnelReport.pdf" }],
   }),
   project({
     id: "P-006",
@@ -296,7 +314,7 @@ export const PROJECTS = [
     date: "September 27, 2024",
     summary: "Explaining variations in Stirling engine effectiveness using thermodynamic theory.",
     tags: ["thermodynamics", "heat engines"],
-    attachments: [{ label: "Full report", file: "report.pdf" }],
+    attachments: [{ label: "Full report", file: "Report.pdf" }],
   }),
   project({
     id: "P-004",
@@ -306,7 +324,7 @@ export const PROJECTS = [
     date: "September 27, 2024",
     summary: "Investigating heat transfer mechanisms in internal combustion engines.",
     tags: ["thermodynamics", "heat transfer", "ICE"],
-    attachments: [{ label: "Full report", file: "report.pdf" }],
+    attachments: [{ label: "Full report", file: "ICE_Report.pdf" }],
   }),
   project({
     id: "P-003",
@@ -316,7 +334,7 @@ export const PROJECTS = [
     date: "August 31, 2024",
     summary: "Exploration of the properties of microwaves, including polarisation, interference and interferometry.",
     tags: ["optics", "interferometry", "waves"],
-    attachments: [{ label: "Full report", file: "report.pdf" }],
+    attachments: [{ label: "Full report", file: "Report.pdf" }],
   }),
   project({
     id: "P-002",
@@ -326,7 +344,7 @@ export const PROJECTS = [
     date: "May 19, 2024",
     summary: "Using differential photometry to detect the transit of extrasolar planets in front of distant stars.",
     tags: ["photometry", "exoplanets", "transit method"],
-    attachments: [{ label: "Full report", file: "report.pdf" }],
+    attachments: [{ label: "Full report", file: "ExtrasolarPlanetsReport.pdf" }],
   }),
   project({
     id: "P-001",

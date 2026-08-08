@@ -6,6 +6,7 @@ import {
   Callout,
   Card,
   MediaFrame,
+  PdfEmbed,
   Tag,
   VideoEmbed,
 } from "../components/index.js";
@@ -132,7 +133,14 @@ export default function ProjectDetail() {
       {leadVideo ? (
         <VideoEmbed youtube={leadVideo.youtube} caption={leadVideo.caption} source={leadVideo.source} />
       ) : leadImage ? (
-        <MediaFrame src={leadImage.src} file={leadImage.file} caption={leadImage.caption} height={280} />
+        <MediaFrame
+          src={leadImage.src}
+          file={leadImage.file}
+          caption={leadImage.caption}
+          width={leadImage.width}
+          imageHeight={leadImage.height}
+          height={280}
+        />
       ) : null}
 
       {project.body.length ? (
@@ -161,7 +169,15 @@ export default function ProjectDetail() {
           <h2 style={sectionLabel}>Figures</h2>
           <div className={figures.length > 3 ? "grid grid--2" : "grid"}>
             {figures.map((im) => (
-              <MediaFrame key={im.file + im.caption} src={im.src} file={im.file} caption={im.caption} height={200} />
+              <MediaFrame
+                key={im.file + im.caption}
+                src={im.src}
+                file={im.file}
+                caption={im.caption}
+                width={im.width}
+                imageHeight={im.height}
+                height={200}
+              />
             ))}
           </div>
         </section>
@@ -181,9 +197,14 @@ export default function ProjectDetail() {
       {project.attachments.length ? (
         <section style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           <h2 style={sectionLabel}>Reports and files</h2>
-          {project.attachments.map((a) => (
-            <AttachmentLink key={a.file + a.label} label={a.label} file={a.file} href={a.href} />
-          ))}
+          {project.attachments.map((a) =>
+            /* Only PDFs get an inline viewer; the source-code zip has nothing to preview. */
+            a.file.toLowerCase().endsWith(".pdf") ? (
+              <PdfEmbed key={a.file + a.label} label={a.label} file={a.file} href={a.href} />
+            ) : (
+              <AttachmentLink key={a.file + a.label} label={a.label} file={a.file} href={a.href} />
+            ),
+          )}
         </section>
       ) : null}
 

@@ -11,12 +11,15 @@ engineering hiring managers — everything essential legible at a glance.
 
 ```sh
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # static site → dist/
-npm run preview    # serve the built site
+npm run dev            # http://localhost:5173
+npm run build          # static site → dist/
+npm run preview        # serve the built site
+npm run check-media    # assert every image and report resolves
+npm run import-assets  # re-import assets from the Notion export (needs Drive + ghostscript)
 ```
 
-Node 20 or newer.
+Node 20 or newer. `import-assets` additionally needs `ghostscript`, `webp` and
+`poppler` (`brew install ghostscript webp poppler`); nothing else does.
 
 ## Routes
 
@@ -38,11 +41,17 @@ profile, all 17 projects, the timeline, skills and interests. Adding a project
 means adding one entry — `id` drives the URL, and a `featured: true` flag puts it
 on the home page and gives its card the ignition top rule.
 
+Asset URLs are **not** written by hand. `npm run import-assets` copies files out
+of the Notion export in Google Drive into `public/media/<project>/`, optimises
+them, and records what it produced in `src/data/media-manifest.js`. The
+`project()` factory in `content.js` turns that into `src` / `href`. A file
+missing from the manifest simply gets no URL, so the page falls back to its
+labelled placeholder instead of showing a broken image. See **[MEDIA.md](MEDIA.md)**.
+
 Two things are still outstanding, both content rather than code:
 
-- **Media.** Figures, videos and report PDFs were never exported from the old
-  Notion portfolio, so they render as labelled slots naming the file each one is
-  waiting for. **[MEDIA.md](MEDIA.md)** lists all 50 and how to fill them.
+- **The 8 videos.** Too large to commit (271 MB), so they are going on YouTube.
+  [MEDIA.md](MEDIA.md) lists each one with the caption already written.
 - **`og:image`** in `index.html` is a relative path. Set it to an absolute URL
   once the site has a domain — most link previews will not resolve a relative one.
 
@@ -67,6 +76,12 @@ The visual language comes from the `alec-stanley-portfolio-design` system
     paint over it.
   - `Input` and `Textarea` were not ported. Nothing on the site takes typed
     input; they are in the design system if that changes.
+
+`PdfEmbed` is an addition rather than a port — the design system has no document
+component. A report row expands into an inline viewer; the iframe is mounted
+only on expand, so an unopened PDF costs nothing. On narrow or touch devices the
+row stays a plain link, because iOS Safari reports `pdfViewerEnabled === true`
+and then renders a single unscrollable page.
 
 The system's own rules — voice, casing, the ~5% accent budget, sequential
 section indices, no emoji — are documented in its `readme.md`. The system lives

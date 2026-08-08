@@ -41,6 +41,10 @@ jobs:
             echo "path=/${repo}/" >> "$GITHUB_OUTPUT"
           fi
 
+      # A renamed or deleted asset must fail here, not 404 for a recruiter.
+      - name: Check media
+        run: npm run check-media
+
       - name: Build
         run: npm run build
         env:
