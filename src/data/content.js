@@ -24,7 +24,7 @@ export const PROFILE = {
   fullName: "Alec Matthew Stanley",
   title: "Aerospace engineering (Honours) and astrophysics",
   institution: "Monash University, Clayton",
-  email: "asta0044@student.monash.edu",
+  email: "contact@alecstanley.com",
   phone: "+61 413 970 596",
   linkedin: "https://www.linkedin.com/in/alec-stanley-0a483b195/",
   location: "Melbourne, VIC",
