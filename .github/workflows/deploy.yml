@@ -33,13 +33,7 @@ jobs:
       - name: Resolve base path
         id: base
         run: |
-          repo="${{ github.event.repository.name }}"
-          owner="${{ github.repository_owner }}"
-          if [ "$repo" = "${owner}.github.io" ]; then
-            echo "path=/" >> "$GITHUB_OUTPUT"
-          else
-            echo "path=/${repo}/" >> "$GITHUB_OUTPUT"
-          fi
+          echo "path=/" >> "$GITHUB_OUTPUT"
 
       # A renamed or deleted asset must fail here, not 404 for a recruiter.
       - name: Check media
