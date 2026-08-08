@@ -1,0 +1,91 @@
+:root {
+  /* --- Base neutrals: "hull" — cool, slightly blue-shifted graphite --- */
+  --hull-1000: #05070a;
+  --hull-950: #080b10;
+  --hull-900: #0b0f15;
+  --hull-850: #10151d;
+  --hull-800: #151b25;
+  --hull-700: #1c242f;
+  --hull-600: #26303d;
+  --hull-500: #384556;
+  --hull-400: #55647a;
+  --hull-300: #8493a6;
+  --hull-200: #b3bfcd;
+  --hull-100: #dde3ea;
+  --hull-050: #eef1f5;
+  --hull-000: #ffffff;
+
+  /* --- Accent: "ignition" — sodium-flare orange, the single signal colour --- */
+  --ignition-700: #a83a09;
+  --ignition-600: #d94f10;
+  --ignition-500: #ff6a2b;
+  --ignition-400: #ff8a55;
+  --ignition-300: #ffab85;
+  --ignition-100: #ffe0d1;
+  --ignition-tint: rgba(255, 106, 43, 0.12);
+  --ignition-tint-strong: rgba(255, 106, 43, 0.24);
+
+  /* --- Secondary data colour: "plasma" — used for charts, telemetry, links-in-data --- */
+  --plasma-600: #1d8fc4;
+  --plasma-500: #3ab7ef;
+  --plasma-300: #8fd8f7;
+  --plasma-tint: rgba(58, 183, 239, 0.12);
+
+  /* --- Semantic states --- */
+  --state-ok: #3ecf8e;
+  --state-ok-tint: rgba(62, 207, 142, 0.12);
+  --state-warn: #ffb020;
+  --state-warn-tint: rgba(255, 176, 32, 0.14);
+  --state-fail: #ff5c5c;
+  --state-fail-tint: rgba(255, 92, 92, 0.12);
+  --state-idle: var(--hull-400);
+
+  /* --- Semantic aliases (dark-first: the portfolio ships dark) --- */
+  --surface-page: var(--hull-950);
+  --surface-panel: var(--hull-900);
+  --surface-card: var(--hull-850);
+  --surface-raised: var(--hull-800);
+  --surface-inset: var(--hull-1000);
+  --surface-invert: var(--hull-050);
+
+  --text-primary: var(--hull-050);
+  --text-body: var(--hull-200);
+  --text-muted: var(--hull-300);
+  --text-faint: var(--hull-400);
+  --text-accent: var(--ignition-500);
+  --text-invert: var(--hull-950);
+  --text-link: var(--ignition-400);
+  --text-link-hover: var(--ignition-300);
+
+  --border-hairline: rgba(132, 147, 166, 0.16);
+  --border-line: rgba(132, 147, 166, 0.28);
+  --border-strong: rgba(132, 147, 166, 0.45);
+  --border-accent: var(--ignition-500);
+
+  --grid-line: rgba(132, 147, 166, 0.07);
+  --scrim: rgba(5, 7, 10, 0.72);
+}
+
+/* Light scope — opt in with class="theme-light" on any container. Used for
+   print, documents and the occasional inverted section. */
+.theme-light {
+  --surface-page: var(--hull-050);
+  --surface-panel: var(--hull-000);
+  --surface-card: var(--hull-000);
+  --surface-raised: var(--hull-000);
+  --surface-inset: var(--hull-100);
+  --surface-invert: var(--hull-900);
+
+  --text-primary: var(--hull-950);
+  --text-body: var(--hull-700);
+  --text-muted: var(--hull-500);
+  --text-faint: var(--hull-400);
+  --text-invert: var(--hull-050);
+  --text-link: var(--ignition-600);
+  --text-link-hover: var(--ignition-700);
+
+  --border-hairline: rgba(38, 48, 61, 0.12);
+  --border-line: rgba(38, 48, 61, 0.2);
+  --border-strong: rgba(38, 48, 61, 0.38);
+  --grid-line: rgba(38, 48, 61, 0.06);
+}

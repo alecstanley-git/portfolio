@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Alec Stanley">
+  <!-- No logo mark exists for this brand and none was invented. This is the
+       system's own signal dot (hull surface, ignition accent) standing in as a
+       favicon. Replace with a real mark if one is ever drawn. -->
+  <rect width="32" height="32" rx="6" fill="#080b10" />
+  <rect x="0.5" y="0.5" width="31" height="31" rx="5.5" fill="none" stroke="#8493a6" stroke-opacity="0.28" />
+  <circle cx="16" cy="16" r="5" fill="#ff6a2b" />
+</svg>

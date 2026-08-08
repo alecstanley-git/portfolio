@@ -1,0 +1,22 @@
+{
+  "name": "alec-stanley-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Technical portfolio of Alec Stanley — aerospace engineering and astrophysics, Monash University.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^0.363.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8"
+  }
+}

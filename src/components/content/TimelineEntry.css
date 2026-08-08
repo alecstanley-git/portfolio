@@ -1,0 +1,21 @@
+.timeline-entry {
+  display: grid;
+  grid-template-columns: 148px 1fr;
+  gap: var(--space-6);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--border-hairline);
+}
+
+.timeline-entry__period {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding-top: 3px;
+}
+
+@media (max-width: 720px) {
+  .timeline-entry {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}
