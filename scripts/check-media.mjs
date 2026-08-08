@@ -21,12 +21,15 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC = path.join(ROOT, "public");
 const BASE = process.argv[2];
 
+/* Lists, because hosts disagree: GitHub Pages serves a zip as
+   application/x-zip-compressed where Vite's preview server says application/zip.
+   Both are correct. */
 const CONTENT_TYPE = {
-  ".webp": "image/webp",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".pdf": "application/pdf",
-  ".zip": "application/zip",
+  ".webp": ["image/webp"],
+  ".png": ["image/png"],
+  ".jpg": ["image/jpeg"],
+  ".pdf": ["application/pdf"],
+  ".zip": ["application/zip", "application/x-zip-compressed"],
 };
 
 const fail = [];
@@ -86,7 +89,7 @@ if (BASE) {
       const length = Number(r.headers.get("content-length") || 0);
       const want = CONTENT_TYPE[path.extname(rel)];
       if (r.status !== 200) fail.push(`HTTP ${r.status}: ${url}`);
-      else if (want && type !== want) fail.push(`content-type ${type}, expected ${want}: ${url}`);
+      else if (want && !want.includes(type)) fail.push(`content-type ${type}, expected ${want.join(" or ")}: ${url}`);
       else if (!length) fail.push(`zero length: ${url}`);
     } catch (err) {
       fail.push(`${err.message}: ${url}`);
