@@ -13,7 +13,7 @@
  *
  * Images  : >200 KB or wider than 1600px  -> downscale to 1600px, encode WebP.
  *           Everything else (small PNG line art) is copied through untouched.
- * PDFs    : Ghostscript downsample to 150 dpi, but only kept if the result has
+ * PDFs    : Ghostscript downsample to 300 dpi, but only kept if the result has
  *           the same page count and is genuinely smaller. Otherwise the
  *           original is used. Compression must never be a correctness risk.
  * Videos  : never imported — far too large for the repo. See MEDIA.md.
@@ -200,17 +200,24 @@ async function processPdf(src, outDir) {
       "-sDEVICE=pdfwrite",
       "-dSAFER",
       "-dCompatibilityLevel=1.7",
-      // /ebook is 150 dpi. /screen would be 72, which turns the axis labels and
-      // tick numbers in these LaTeX reports to mush. The knobs below are pinned
-      // explicitly so a future Ghostscript can't quietly change the preset.
-      "-dPDFSETTINGS=/ebook",
+      /* 300 dpi, print grade. These reports embed matplotlib plots whose axis
+         lines and tick labels are one pixel wide, and 150 dpi visibly softened
+         them — a 6x linear downsample from the ~900 ppi source. At 300 the
+         figures are indistinguishable from the originals.
+         /printer rather than /ebook for its higher image quality; the knobs are
+         pinned explicitly so a future Ghostscript cannot change the preset out
+         from under us. Threshold 1.0 downsamples anything above target instead
+         of leaving 300-450 ppi images untouched. */
+      "-dPDFSETTINGS=/printer",
       "-dDetectDuplicateImages=true",
       "-dDownsampleColorImages=true",
-      "-dColorImageResolution=150",
+      "-dColorImageResolution=300",
+      "-dColorImageDownsampleThreshold=1.0",
       "-dDownsampleGrayImages=true",
-      "-dGrayImageResolution=150",
+      "-dGrayImageResolution=300",
+      "-dGrayImageDownsampleThreshold=1.0",
       "-dDownsampleMonoImages=true",
-      "-dMonoImageResolution=300",
+      "-dMonoImageResolution=600",
       "-dNOPAUSE",
       "-dQUIET",
       "-dBATCH",

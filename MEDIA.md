@@ -35,9 +35,18 @@ What it does:
 - **Images** — anything over 200 KB or wider than 1600px is downscaled to
   1600px and encoded as WebP q82; smaller PNG line art is copied untouched.
   8.9 MB → 1.4 MB.
-- **PDFs** — Ghostscript downsamples embedded images to 150 dpi. The result is
-  only kept if the page count is unchanged *and* it is genuinely smaller;
-  otherwise the original is copied. 71.8 MB → 19.4 MB.
+- **PDFs** — Ghostscript downsamples embedded images to 300 dpi, print grade.
+  The result is only kept if the page count is unchanged *and* it is genuinely
+  smaller; otherwise the original is copied. 71.8 MB → 31.0 MB.
+
+  150 dpi was tried first and rejected: the reports embed matplotlib plots with
+  one-pixel axis lines and small tick labels, and a 6× linear downsample from
+  the ~900 ppi source visibly softened them. At 300 dpi the figures are
+  indistinguishable from the originals. Body text is vector throughout and was
+  never affected either way.
+
+  Note the **Download button serves this copy, not the original** — the
+  originals live only in the Drive export.
 - **`CSWA_Certificate.pdf` is deliberately not compressed.** It is encrypted
   with `change:no`, and re-writing it through Ghostscript would strip that
   restriction. It is copied byte-for-byte.

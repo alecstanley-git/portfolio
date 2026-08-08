@@ -21,6 +21,8 @@ npm run fetch-covers   # re-fetch card thumbnails from the old Notion site
 
 Node 20 or newer. `import-assets` additionally needs `ghostscript`, `webp` and
 `poppler` (`brew install ghostscript webp poppler`); nothing else does.
+It re-encodes report figures at 300 dpi — the copy a visitor downloads is that
+one, not the Drive original.
 
 ## Routes
 
