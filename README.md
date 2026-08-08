@@ -15,7 +15,8 @@ npm run dev            # http://localhost:5173
 npm run build          # static site → dist/
 npm run preview        # serve the built site
 npm run check-media    # assert every image and report resolves
-npm run import-assets  # re-import assets from the Notion export (needs Drive + ghostscript)
+npm run import-assets  # re-import figures/reports from the Notion export (needs Drive + ghostscript)
+npm run fetch-covers   # re-fetch card thumbnails from the old Notion site
 ```
 
 Node 20 or newer. `import-assets` additionally needs `ghostscript`, `webp` and
@@ -47,6 +48,12 @@ them, and records what it produced in `src/data/media-manifest.js`. The
 `project()` factory in `content.js` turns that into `src` / `href`. A file
 missing from the manifest simply gets no URL, so the page falls back to its
 labelled placeholder instead of showing a broken image. See **[MEDIA.md](MEDIA.md)**.
+
+Card thumbnails come from a **different source** and have their own script.
+They are Notion *page covers*, which the Markdown export does not include at
+all — several exist nowhere but the live site. `npm run fetch-covers` pulls them
+from the old portfolio's public API into `cover-manifest.js`. The optimised
+output is committed, because that source could disappear.
 
 Two things are still outstanding, both content rather than code:
 

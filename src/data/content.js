@@ -17,6 +17,7 @@
  */
 import { asset } from "../lib/asset.js";
 import MEDIA from "./media-manifest.js";
+import COVERS from "./cover-manifest.js";
 
 export const PROFILE = {
   name: "Alec Stanley",
@@ -43,6 +44,7 @@ export const PROFILE = {
 const project = (o) => {
   const slug = o.id.toLowerCase();
   const imported = MEDIA[slug] || {};
+  const cover = COVERS[slug];
   return {
     status: { label: "Complete", tone: "ok" },
     tags: [],
@@ -50,6 +52,9 @@ const project = (o) => {
     body: [],
     ...o,
     slug,
+    // The card thumbnail. Sourced from the old site's Notion page covers, which
+    // the Markdown export omits entirely — see scripts/fetch-covers.mjs.
+    image: o.image ?? (cover ? asset(cover.path) : undefined),
     // After the spread, so an explicit `src` / `href` on an entry still wins.
     images: (o.images || []).map((i) => {
       const m = imported[i.file];

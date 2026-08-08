@@ -4,17 +4,25 @@ Images and reports are **imported and live**. Videos are the only thing left.
 
 | | |
 | --- | --- |
-| Images | 24 / 24 imported |
+| Card thumbnails | 17 / 17 imported |
+| Figures | 24 / 24 imported |
 | Reports and files | 18 / 18 imported (17 PDFs + 1 zip) |
 | Videos | 0 / 8 — awaiting YouTube links |
 
 Source of record is the Notion export in Google Drive:
 `My Drive/OLDPORTFOLIO/Alec Stanley/Skills and Projects/`. It is never modified.
 
-## Re-importing
+## Two sources, two scripts
+
+Figures and reports come from the Drive export. **Card thumbnails do not** —
+they are Notion *page covers*, which the Markdown export omits entirely. The CFD
+contour on P-014, the glider photo on P-012 and the CSWA results screen on P-008
+exist nowhere but the live site, so they are fetched from its public API and the
+optimised WebP is committed in case that source goes away.
 
 ```sh
-npm run import-assets    # copy + optimise from the Drive export into public/media/
+npm run import-assets    # figures + reports, from the Drive export
+npm run fetch-covers     # card thumbnails, from the old Notion site
 npm run check-media      # assert every referenced asset resolves
 ```
 
@@ -33,6 +41,8 @@ What it does:
 - **`CSWA_Certificate.pdf` is deliberately not compressed.** It is encrypted
   with `change:no`, and re-writing it through Ghostscript would strip that
   restriction. It is copied byte-for-byte.
+- **Card thumbnails** — WebP q80 at 900px wide, enough for a 370px card on a
+  2× display. 7.0 MB → 0.7 MB.
 - **Videos are never imported** — 271 MB, two of them over 115 MB.
 
 ## The 8 videos to upload

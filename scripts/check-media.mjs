@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 
 import { PROJECTS } from "../src/data/content.js";
 import MEDIA from "../src/data/media-manifest.js";
+import COVERS from "../src/data/cover-manifest.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PUBLIC = path.join(ROOT, "public");
@@ -48,12 +49,16 @@ for (const p of PROJECTS) {
     if (!a.href) fail.push(`${p.id} attachment "${a.file}" resolved to no URL`);
   }
   videoSlots += p.videos.filter((v) => !v.youtube).length;
+  if (!p.image) fail.push(`${p.id} has no card thumbnail`);
 }
 
 // Every manifest path must exist on disk, be non-empty, and be lowercase —
 // macOS is case-insensitive but GitHub Pages is not, so a stray capital is a
 // "works locally, 404 in production" bug waiting to happen.
-const paths = Object.values(MEDIA).flatMap((files) => Object.values(files).map((m) => m.path));
+const paths = [
+  ...Object.values(MEDIA).flatMap((files) => Object.values(files).map((m) => m.path)),
+  ...Object.values(COVERS).map((c) => c.path),
+];
 for (const rel of paths) {
   if (rel !== rel.toLowerCase()) fail.push(`not lowercase: ${rel}`);
   if (/\s/.test(rel)) fail.push(`contains whitespace: ${rel}`);
@@ -98,7 +103,7 @@ if (BASE) {
 }
 
 console.log(
-  `${images} images, ${attachments} attachments, ${paths.length} files on disk` +
+  `${Object.keys(COVERS).length} card thumbnails, ${images} figures, ${attachments} attachments, ${paths.length} files on disk` +
     (BASE ? `, all fetched from ${BASE}` : "") +
     `\n${videoSlots} video slot(s) still awaiting a YouTube link`,
 );

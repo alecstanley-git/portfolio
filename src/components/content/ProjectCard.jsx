@@ -55,6 +55,20 @@ export function ProjectCard({
           transition: "filter var(--dur-base) var(--ease-standard)",
         }}
       >
+        {/* The status badge carries its meaning in colour, which a bright photo
+            destroys. A short scrim along the top edge keeps it legible over any
+            cover without tinting the image itself. */}
+        {status && image ? (
+          <span
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: "0 0 auto 0",
+              height: 72,
+              background: "linear-gradient(to bottom, rgba(5, 7, 10, 0.72), transparent)",
+            }}
+          />
+        ) : null}
         {status ? (
           <span style={{ position: "absolute", top: "var(--space-3)", right: "var(--space-3)" }}>
             <Badge tone={status.tone}>{status.label}</Badge>
