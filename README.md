@@ -55,10 +55,9 @@ all — several exist nowhere but the live site. `npm run fetch-covers` pulls th
 from the old portfolio's public API into `cover-manifest.js`. The optimised
 output is committed, because that source could disappear.
 
-Two things are still outstanding, both content rather than code:
+Videos are on YouTube rather than committed (271 MB in total); each entry
+carries a `youtube` link. One thing is still outstanding:
 
-- **The 8 videos.** Too large to commit (271 MB), so they are going on YouTube.
-  [MEDIA.md](MEDIA.md) lists each one with the caption already written.
 - **`og:image`** in `index.html` is a relative path. Set it to an absolute URL
   once the site has a domain — most link previews will not resolve a relative one.
 

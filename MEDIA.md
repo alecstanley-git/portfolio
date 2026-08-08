@@ -1,13 +1,13 @@
 # Media
 
-Images and reports are **imported and live**. Videos are the only thing left.
+Everything is imported and live. Nothing outstanding.
 
 | | |
 | --- | --- |
 | Card thumbnails | 17 / 17 imported |
 | Figures | 24 / 24 imported |
 | Reports and files | 18 / 18 imported (17 PDFs + 1 zip) |
-| Videos | 0 / 8 — awaiting YouTube links |
+| Videos | 8 / 8 embedded from YouTube |
 
 Source of record is the Notion export in Google Drive:
 `My Drive/OLDPORTFOLIO/Alec Stanley/Skills and Projects/`. It is never modified.
@@ -45,44 +45,27 @@ What it does:
   2× display. 7.0 MB → 0.7 MB.
 - **Videos are never imported** — 271 MB, two of them over 115 MB.
 
-## The 8 videos to upload
+## Videos
 
-Upload each to YouTube (unlisted is fine), then paste the link into
-`src/data/content.js` by adding a `youtube` key to the matching entry:
+The 8 videos are hosted on YouTube rather than committed — 271 MB in total, two
+of them over 115 MB. Each `videos[]` entry in `content.js` carries a `youtube`
+link; the placeholder slot becomes an embed as soon as that key exists.
 
-```js
-{ caption: "X–Y projection (top-down)", source: "orbit_xy.mp4",
-  youtube: "https://youtu.be/XXXXXXXXXXX" },
-```
+Five are 4:3 (the matplotlib animations) and carry `aspect: "4 / 3"` so they
+fill their frame instead of sitting pillarboxed in a 16:9 box. The three screen
+recordings are 16:9 and use the default.
 
-The placeholder slot becomes a real embed as soon as that key exists. Match on
-`source` — it is unique.
-
-### P-017 — Introduction to Programming, C++ Portfolio
-
-| File | Size | Caption already written |
+| Project | Source file | Video |
 | --- | --- | --- |
-| `H2_Video.mp4` | 116.4 MB | Walkthrough — how to use the simulator |
-| `H1_Video.mp4` | 123.8 MB | Source-code deep dive and the challenges I faced |
+| P-017 | `H2_Video.mp4` | H2 Video |
+| P-017 | `H1_Video.mp4` | H+1 Video |
+| P-013 | `orbit_3d.mp4` | orbit 3d |
+| P-013 | `orbit_xy.mp4` | Orbit XY |
+| P-013 | `orbit_xz.mp4` | orbit xz |
+| P-013 | `orbit.mp4` | orbit |
+| P-011 | `spacecraft_animation_20fps_100s.mp4` | spacecraft animation 20fps 100s |
+| P-011 | `malaysian_airlines_10fps_40s.mp4` | airliner 10fps 40s |
 
-### P-013 — Galaxy Collision Simulation
-
-| File | Size | Caption already written |
-| --- | --- | --- |
-| `orbit_3d.mp4` | 2.4 MB | Full 3D numerical integration — two massive bodies and 240 massless stars |
-| `orbit_xy.mp4` | 3.6 MB | X–Y projection (top-down) |
-| `orbit_xz.mp4` | 2.1 MB | X–Z projection (side-on) |
-| `orbit.mp4` | 0.4 MB | Early draft — two stellar masses in an eccentric binary orbit |
-
-### P-011 — Tumbling Rocket, Intermediate Axis Theorem
-
-| File | Size | Caption already written |
-| --- | --- | --- |
-| `spacecraft_animation_20fps_100s.mp4` | 15.8 MB | Rocket undergoing torque-free motion in three dimensions — chaotic, unstable rotation |
-| `malaysian_airlines_10fps_40s.mp4` | 6.2 MB | The same principles applied to an aeroplane |
-
-All eight are in the Drive export, in the folder named after their project.
-
-`orbit_3d.mp4` and `spacecraft_animation_20fps_100s.mp4` are the lead videos on
-their pages — they appear above the write-up, so they're the two worth doing
-first.
+To swap a link, edit the `youtube` value on the matching `source` in
+`src/data/content.js`. `npm run check-media` reports how many slots are still
+empty.

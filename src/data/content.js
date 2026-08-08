@@ -84,8 +84,8 @@ export const PROJECTS = [
       "For the high distinction I built an n-body gravitational simulator: a physics engine, a plotting engine and a custom window manager, among other utilities.",
     ],
     videos: [
-      { caption: "Walkthrough — how to use the simulator", source: "H2_Video.mp4" },
-      { caption: "Source-code deep dive and the challenges I faced", source: "H1_Video.mp4" },
+      { caption: "Walkthrough — how to use the simulator", source: "H2_Video.mp4", youtube: "https://youtu.be/tva667XRgrs" },
+      { caption: "Source-code deep dive and the challenges I faced", source: "H1_Video.mp4", youtube: "https://youtu.be/y7kh_ImsZWA" },
     ],
     attachments: [
       { label: "Full portfolio", file: "FIT1045-FIT1053-asta0044-portfolio.pdf" },
@@ -163,11 +163,11 @@ export const PROJECTS = [
     videos: [
       {
         caption: "Full 3D numerical integration — two massive bodies and 240 massless stars",
-        source: "orbit_3d.mp4",
+        source: "orbit_3d.mp4", youtube: "https://youtu.be/IX7oxoXnUtU", aspect: "4 / 3",
       },
-      { caption: "X–Y projection (top-down)", source: "orbit_xy.mp4" },
-      { caption: "X–Z projection (side-on)", source: "orbit_xz.mp4" },
-      { caption: "Early draft — two stellar masses in an eccentric binary orbit", source: "orbit.mp4" },
+      { caption: "X–Y projection (top-down)", source: "orbit_xy.mp4", youtube: "https://youtube.com/shorts/OnNiuFmy3v0", aspect: "4 / 3" },
+      { caption: "X–Z projection (side-on)", source: "orbit_xz.mp4", youtube: "https://youtube.com/shorts/SGShWJixM4c", aspect: "4 / 3" },
+      { caption: "Early draft — two stellar masses in an eccentric binary orbit", source: "orbit.mp4", youtube: "https://youtube.com/shorts/PHwWd32pBQg", aspect: "4 / 3" },
     ],
   }),
   project({
@@ -210,9 +210,9 @@ export const PROJECTS = [
     videos: [
       {
         caption: "Rocket undergoing torque-free motion in three dimensions — chaotic, unstable rotation",
-        source: "spacecraft_animation_20fps_100s.mp4",
+        source: "spacecraft_animation_20fps_100s.mp4", youtube: "https://youtu.be/gh8g2y9LSV0", aspect: "4 / 3",
       },
-      { caption: "The same principles applied to an aeroplane", source: "malaysian_airlines_10fps_40s.mp4" },
+      { caption: "The same principles applied to an aeroplane", source: "malaysian_airlines_10fps_40s.mp4", youtube: "https://youtu.be/oZQza4nHjzo" },
     ],
     attachments: [{ label: "Full report (10/10)", file: "report.pdf" }],
   }),

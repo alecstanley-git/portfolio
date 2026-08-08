@@ -131,7 +131,12 @@ export default function ProjectDetail() {
       </header>
 
       {leadVideo ? (
-        <VideoEmbed youtube={leadVideo.youtube} caption={leadVideo.caption} source={leadVideo.source} />
+        <VideoEmbed
+          youtube={leadVideo.youtube}
+          caption={leadVideo.caption}
+          source={leadVideo.source}
+          aspect={leadVideo.aspect}
+        />
       ) : leadImage ? (
         <MediaFrame
           src={leadImage.src}
@@ -188,7 +193,7 @@ export default function ProjectDetail() {
           <h2 style={sectionLabel}>Video</h2>
           <div className={restVideos.length > 2 ? "grid grid--2" : "grid"}>
             {restVideos.map((v) => (
-              <VideoEmbed key={v.source} youtube={v.youtube} caption={v.caption} source={v.source} />
+              <VideoEmbed key={v.source} youtube={v.youtube} caption={v.caption} source={v.source} aspect={v.aspect} />
             ))}
           </div>
         </section>

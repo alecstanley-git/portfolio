@@ -6,8 +6,10 @@ function youtubeId(url) {
   return m ? m[1] : /^[\w-]{6,}$/.test(url) ? url : null;
 }
 
-/** 16:9 video block — YouTube embed when `youtube` is set, otherwise a labelled placeholder. */
-export function VideoEmbed({ youtube, caption, source, style, ...rest }) {
+/** Video block — YouTube embed when `youtube` is set, otherwise a labelled
+ *  placeholder. `aspect` defaults to 16:9; the matplotlib animations here are
+ *  4:3 and would otherwise sit pillarboxed inside black bars. */
+export function VideoEmbed({ youtube, caption, source, aspect = "16 / 9", style, ...rest }) {
   const id = youtubeId(youtube);
   return (
     <figure style={{ margin: 0, display: "flex", flexDirection: "column", gap: "var(--space-3)", ...style }} {...rest}>
@@ -16,7 +18,7 @@ export function VideoEmbed({ youtube, caption, source, style, ...rest }) {
         style={{
           position: "relative",
           width: "100%",
-          aspectRatio: "16 / 9",
+          aspectRatio: aspect,
           borderRadius: "var(--radius-card)",
           overflow: "hidden",
           border: id ? "1px solid var(--border-hairline)" : "1px dashed var(--border-line)",
