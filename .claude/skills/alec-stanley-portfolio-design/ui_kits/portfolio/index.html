@@ -1,0 +1,45 @@
+<!-- @dsCard group="Portfolio site" viewport="1280x820" name="Portfolio — full site" subtitle="Click-through recreation: home, work index, project detail, about, contact" -->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Alec Stanley — Technical Portfolio</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="./data.js"></script>
+<script type="text/babel" src="./Home.jsx"></script>
+<script type="text/babel" src="./Work.jsx"></script>
+<script type="text/babel" src="./About.jsx"></script>
+<style>body{background:var(--surface-page)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { NavBar, Footer, Button } = window.AlecStanleyPortfolioDesignSystem_9e359a;
+const NAV = [{id:"home",label:"Home"},{id:"work",label:"Work"},{id:"about",label:"About"},{id:"contact",label:"Contact"}];
+
+function App(){
+  const [view, setView] = React.useState("home");
+  const [project, setProject] = React.useState(null);
+  const go = (id) => { setProject(null); setView(id); window.scrollTo(0,0); };
+  const open = (id) => { setProject(id); setView("work"); window.scrollTo(0,0); };
+  let body;
+  if (project) body = <window.ProjectDetail id={project} onBack={() => setProject(null)} />;
+  else if (view === "home") body = <window.Home onNavigate={go} onOpenProject={open} />;
+  else if (view === "work") body = <window.Work onOpenProject={open} />;
+  else if (view === "about") body = <window.About />;
+  else body = <window.Contact />;
+  return (
+    <div>
+      <NavBar items={NAV} activeId={view} onNavigate={go}
+        action={<Button as="a" href="../../assets/alec-stanley-cv.pdf" target="_blank" rel="noopener" size="sm" variant="secondary" iconLeft="download">CV</Button>} />
+      {body}
+      <Footer email={window.CV.email} location="Melbourne, VIC"
+        links={[{icon:"github",label:"GitHub"},{icon:"linkedin",label:"LinkedIn"},{icon:"mail",label:"Email"}]}
+        note="Melbourne, VIC · Monash University, Clayton · Last updated 2026-08" />
+    </div>
+  );
+}
+function mount(){
+  if (!window.Home || !window.Work || !window.About) return setTimeout(mount, 60);
+  ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+}
+mount();
+</script></body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Portfolio page" description="Single-page technical portfolio: hero, stat rail, project grid, timeline, contact." -->
+<helmet><script src="./ds-base.js"></script><style>body{margin:0;background:#080b10}</style></helmet>
+<div style="min-height:100vh;background:var(--surface-page);color:var(--text-body);font:var(--type-body)">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.NavBar" items="{{ navItems }}" activeId="work" action="{{ navAction }}" hint-size="100%,64px"></x-import>
+<section style="position:relative;padding:96px 40px 64px;border-bottom:1px solid var(--border-hairline);background-color:var(--surface-page);background-image:linear-gradient(rgba(132,147,166,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(132,147,166,.07) 1px,transparent 1px);background-size:32px 32px">
+<div style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<span style="font:500 11px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.14em;color:var(--ignition-500)">00 / Melbourne, VIC — available mid-2027</span>
+<h1 style="font:700 78px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--text-primary);margin:0">Alec Stanley</h1>
+<p style="font:400 22px/1.5 var(--font-body);color:var(--text-body);max-width:52ch;margin:0">Aerospace engineering and astrophysics at Monash. I design, simulate and test hardware — and write the code that makes sense of the data it produces.</p>
+<div style="display:flex;gap:12px;margin-top:8px">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Button" size="lg" iconRight="arrow-right" hint-size="170px,46px">See the work</x-import>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Button" size="lg" variant="secondary" iconLeft="download" hint-size="180px,46px">Download CV</x-import>
+</div>
+</div>
+<div style="max-width:1180px;margin:64px auto 0;display:flex;gap:64px;padding-top:32px;border-top:1px solid var(--border-hairline)">
+<sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.StatBlock" value="{{ s.value }}" unit="{{ s.unit }}" label="{{ s.label }}" tone="{{ s.tone }}" hint-size="120px,60px"></x-import>
+</sc-for>
+</div>
+</section>
+<section style="max-width:1180px;margin:0 auto;padding:96px 40px;display:flex;flex-direction:column;gap:32px">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.SectionHeading" index="01 / Selected work" title="Three projects worth your time" lede="Full index has six. These are the ones I would talk through in an interview." hint-size="100%,110px"></x-import>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+<sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.ProjectCard" dc-props="{{ p }}" hint-size="100%,380px"></x-import>
+</sc-for>
+</div>
+</section>
+<section style="max-width:1180px;margin:0 auto;padding:0 40px 96px;display:flex;flex-direction:column;gap:16px">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.SectionHeading" index="02 / Experience" title="Study, leadership and test work" hint-size="100%,80px"></x-import>
+<sc-for list="{{ timeline }}" as="t" hint-placeholder-count="3">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.TimelineEntry" dc-props="{{ t }}" hint-size="100%,110px"></x-import>
+</sc-for>
+</section>
+<section style="max-width:1180px;margin:0 auto;padding:0 40px 96px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:24px">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.SectionHeading" index="03 / Contact" title="Let's talk" lede="Graduate roles, internships, or a question about any project here." hint-size="100%,110px"></x-import>
+<div style="font:500 12px/2 var(--font-mono);color:var(--text-faint);letter-spacing:.04em">EMAIL&nbsp;&nbsp;&nbsp;hello@alecstanley.dev<br>BASED&nbsp;&nbsp;&nbsp;MELBOURNE, VIC, AUSTRALIA<br>GITHUB&nbsp;&nbsp;/alecstanley</div>
+</div>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Card" accent="{{ true }}" padding="32px" hint-size="100%,300px">
+<div style="display:flex;flex-direction:column;gap:20px">
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Input" label="Name" placeholder="Your name" hint-size="100%,70px"></x-import>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Input" label="Email" placeholder="you@company.com" hint-size="100%,70px"></x-import>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Textarea" label="Message" rows="{{ 4 }}" placeholder="What are you working on?" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Button" fullWidth="{{ true }}" iconRight="send" hint-size="100%,38px">Send message</x-import>
+</div>
+</x-import>
+</section>
+<x-import component-from-global-scope="AlecStanleyPortfolioDesignSystem_9e359a.Footer" links="{{ footerLinks }}" note="Melbourne, VIC · Monash University · Last updated 2026-08" hint-size="100%,140px"></x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;stats&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{value:string,unit?:string,label:string,tone?:'accent'}[]&quot;},&quot;projects&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ProjectCardProps[]&quot;},&quot;timeline&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;TimelineEntryProps[]&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const ns = window.AlecStanleyPortfolioDesignSystem_9e359a || {};
+    return {
+      navItems: [
+        { id: "home", label: "Home" },
+        { id: "work", label: "Work" },
+        { id: "about", label: "About" },
+        { id: "contact", label: "Contact" },
+      ],
+      navAction: ns.Button
+        ? React.createElement(ns.Button, { size: "sm", variant: "secondary", iconLeft: "download" }, "CV")
+        : null,
+      footerLinks: [
+        { icon: "github", label: "GitHub" },
+        { icon: "linkedin", label: "LinkedIn" },
+        { icon: "mail", label: "Email" },
+      ],
+      stats: this.props.stats ?? [
+        { value: "4", label: "Year of 5" },
+        { value: "6", unit: "+", label: "Technical projects", tone: "accent" },
+        { value: "2", label: "Majors" },
+        { value: "2027", label: "Graduating" },
+      ],
+      projects: this.props.projects ?? [
+        { id: "P-006", title: "Hybrid rocket motor test stand", discipline: "Aerospace", year: "2025", status: { label: "Complete", tone: "ok" }, tags: ["MATLAB", "LabVIEW", "SolidWorks"], summary: "Thrust-measurement rig with real-time telemetry capture and an automated abort sequence." },
+        { id: "P-005", title: "Exoplanet transit pipeline", discipline: "Astrophysics", year: "2025", status: { label: "In progress", tone: "warn" }, tags: ["python", "astropy", "TESS"], summary: "Detrending and box-least-squares search over TESS light curves, with vetting plots per candidate." },
+        { id: "P-004", title: "Wing box structural optimisation", discipline: "Aerospace", year: "2024", status: { label: "Complete", tone: "ok" }, tags: ["ANSYS", "python", "FEA"], summary: "Parametric FEA sweep over spar and rib layout to minimise mass under a fixed deflection limit." },
+      ],
+      timeline: this.props.timeline ?? [
+        { period: "2023 — NOW", current: true, title: "B.Eng (Honours) / B.Sc", org: "Monash University", description: "Fourth year of a five-year double degree. Aerospace engineering major; astrophysics major in science.", tags: ["Aerospace", "Astrophysics"] },
+        { period: "2024 — 2025", title: "Test engineering lead", org: "Monash Rocketry", description: "Ran static-fire campaigns for the hybrid motor programme.", tags: ["Test", "Instrumentation"] },
+        { period: "2023 — 2024", title: "Residential leader", org: "Monash Residential Services", description: "Pastoral and community leadership for a floor of 40 first-year students.", tags: ["Leadership"] },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

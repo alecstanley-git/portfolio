@@ -1,0 +1,23 @@
+<!-- @dsCard group="Components" viewport="700x340" name="Layout — nav, card, section heading, footer" subtitle="Page shell surfaces" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{padding:0}.pad{padding:20px;display:flex;flex-direction:column;gap:18px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const { NavBar, Card, SectionHeading, Footer, Button } = window.AlecStanleyPortfolioDesignSystem_9e359a;
+function Demo(){return(<div>
+<NavBar items={[{id:'work',label:'Work'},{id:'about',label:'About'},{id:'contact',label:'Contact'}]} activeId="work" action={<Button size="sm" variant="secondary" iconLeft="download">CV</Button>}/>
+<div className="pad">
+<SectionHeading index="02 / PROJECTS" title="Selected technical work" lede="Design, simulation and analysis across aerospace and astrophysics." action={<Button variant="ghost" iconRight="arrow-right">All</Button>}/>
+<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+<Card><h3 style={{marginBottom:8}}>Standard card</h3><p style={{font:'var(--type-body-sm)',color:'var(--text-muted)'}}>Hairline border, no shadow at rest.</p></Card>
+<Card accent interactive><h3 style={{marginBottom:8}}>Accent + interactive</h3><p style={{font:'var(--type-body-sm)',color:'var(--text-muted)'}}>Lifts 2px on hover.</p></Card>
+</div>
+</div>
+<Footer links={[{icon:'github',label:'GitHub'},{icon:'linkedin',label:'LinkedIn'},{icon:'mail',label:'Email'}]} note="Built in Melbourne · Last updated 2026-08"/>
+</div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>
