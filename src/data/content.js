@@ -25,7 +25,7 @@ export const PROFILE = {
   title: "Aerospace engineering (Honours) and astrophysics",
   institution: "Monash University, Clayton",
   email: "contact@alecstanley.com",
-  linkedin: "https://www.linkedin.com/in/alec-stanley-0a483b195/",
+  linkedin: "https://www.linkedin.com/in/alecstanley/",
   github: "https://github.com/alecstanley-git/",
   location: "Melbourne, VIC",
   get cvUrl() {
