@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Button, Footer, NavBar } from "./components/index.js";
+import { Button, Footer, NavBar, ToastProvider } from "./components/index.js";
 import { PROFILE } from "./data/content.js";
+import { useCopyEmail } from "./lib/useCopyEmail.js";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
@@ -21,6 +22,17 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  return (
+    <ToastProvider>
+      <PageShell />
+    </ToastProvider>
+  );
+}
+
+/* Split from App so it sits inside the provider and can raise toasts. */
+function PageShell() {
+  const { copy, copied, email } = useCopyEmail();
+
   return (
     <div className="page">
       <ScrollToTop />
@@ -47,11 +59,14 @@ export default function App() {
         <Outlet />
       </main>
       <Footer
-        email={PROFILE.email}
+        email={email}
         location={PROFILE.location}
+        emailCopied={copied}
+        onCopyEmail={copy}
         links={[
           { icon: "linkedin", label: "LinkedIn", href: PROFILE.linkedin },
-          { icon: "mail", label: "Email", href: `mailto:${PROFILE.email}` },
+          { icon: "github", label: "GitHub", href: PROFILE.github },
+          { icon: copied ? "check" : "copy", label: "Copy email address", onClick: copy },
           { icon: "file-text", label: "CV", href: PROFILE.cvUrl },
         ]}
         note={`Melbourne, VIC · Monash University, Clayton · Last updated ${PROFILE.lastUpdated}`}

@@ -1,14 +1,24 @@
-import { Button, Callout, Card, SectionHeading } from "../components/index.js";
+import { Button, Callout, Card, Icon, SectionHeading } from "../components/index.js";
 import { PROFILE } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
+import { useCopyEmail } from "../lib/useCopyEmail.js";
 
-const SUBJECT = encodeURIComponent("Graduate role — Alec Stanley");
-
-function Fact({ label, value, href, external }) {
+/* A fact is plain text, a link, or — for the address — a copy action. */
+function Fact({ label, value, href, external, onCopy, copied }) {
   return (
     <div className="fact">
       <span className="fact__label">{label}</span>
-      {href ? (
+      {onCopy ? (
+        <button
+          type="button"
+          className="fact__value copy-email"
+          onClick={onCopy}
+          title={copied ? "Copied" : "Copy email address"}
+        >
+          {value}
+          <Icon name={copied ? "check" : "copy"} size="sm" />
+        </button>
+      ) : href ? (
         <a
           className="fact__value"
           href={href}
@@ -25,6 +35,8 @@ function Fact({ label, value, href, external }) {
 }
 
 export default function Contact() {
+  const { copy, copied } = useCopyEmail();
+
   usePageMeta(
     "Contact",
     "Get in touch with Alec Stanley about graduate roles, internships or any project in this portfolio.",
@@ -40,9 +52,9 @@ export default function Contact() {
         />
 
         <div className="facts">
-          <Fact label="Email" value={PROFILE.email} href={`mailto:${PROFILE.email}`} />
-          <Fact label="Phone" value={PROFILE.phone} href={`tel:${PROFILE.phone.replace(/\s/g, "")}`} />
+          <Fact label="Email" value={PROFILE.email} onCopy={copy} copied={copied} />
           <Fact label="LinkedIn" value="alec-stanley" href={PROFILE.linkedin} external />
+          <Fact label="GitHub" value="alecstanley-git" href={PROFILE.github} external />
           <Fact label="Based in" value={`${PROFILE.location} · ${PROFILE.institution}`} />
         </div>
 
@@ -62,8 +74,10 @@ export default function Contact() {
               and so on — and I'll send the report, the code and the raw data.
             </p>
             <div className="cluster cluster--actions">
-              <Button as="a" href={`mailto:${PROFILE.email}?subject=${SUBJECT}`} size="lg" iconRight="mail">
-                Email me
+              {/* Label stays fixed so the confirmation state does not reflow
+                  the button row; the icon and the toast carry the feedback. */}
+              <Button onClick={copy} size="lg" iconRight={copied ? "check" : "copy"}>
+                Copy email address
               </Button>
               <Button
                 as="a"

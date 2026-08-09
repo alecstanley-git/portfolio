@@ -1,9 +1,26 @@
 import { Link } from "react-router-dom";
-import { Button, Callout, Icon, ProjectCard, SectionHeading, StatBlock, Tag } from "../components/index.js";
-import { APPROACH, FEATURED, PROFILE, PROJECTS } from "../data/content.js";
+import { Button, ProjectCard, SectionHeading, StatBlock } from "../components/index.js";
+import { FEATURED, PROFILE, PROJECTS, STUDY_AREAS } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
-const HERO_TAGS = ["Aerospace engineering", "Astrophysics", "python", "MATLAB", "C++", "SolidWorks", "CFD"];
+/** Discipline chip that swaps its label for "Major"/"Minor" on hover. Both
+    labels are stacked in one grid cell so the chip never changes width.
+    The swap is a visual affordance only — it is not a control, so the chip is
+    not focusable, and the kind is carried to assistive tech (and to anyone who
+    cannot separate the two tints) by the off-screen text instead of by colour. */
+function DisciplineTag({ label, kind }) {
+  return (
+    <span className={`disc-tag disc-tag--${kind}`}>
+      <span className="disc-tag__swap">
+        <span className="disc-tag__label">{label}</span>
+        <span className="disc-tag__kind" aria-hidden="true">
+          {kind}
+        </span>
+      </span>
+      <span className="sr-only"> — {kind}</span>
+    </span>
+  );
+}
 
 function Hero() {
   return (
@@ -33,10 +50,8 @@ function Hero() {
             {PROFILE.intro}
           </p>
           <div className="cluster">
-            {HERO_TAGS.map((t, i) => (
-              <Tag key={t} tone={i < 2 ? "accent" : "neutral"}>
-                {t}
-              </Tag>
+            {STUDY_AREAS.map((d) => (
+              <DisciplineTag key={d.label} {...d} />
             ))}
           </div>
           <div className="cluster cluster--actions">
@@ -57,10 +72,9 @@ function Hero() {
           </div>
         </div>
         <div className="stat-rail">
-          <StatBlock value="4" label="Year of 5" />
+          <StatBlock value="2027" label="Graduation" />
           <StatBlock value={PROJECTS.length} label="Technical projects" tone="accent" />
-          <StatBlock value="2" label="Majors" />
-          <StatBlock value="98.65" label="ATAR" />
+          <StatBlock value="77.1" label="WAM" />
         </div>
       </div>
     </section>
@@ -92,27 +106,6 @@ export default function Home() {
           <Button as={Link} to="/work" variant="ghost" iconRight="arrow-right">
             All projects
           </Button>
-        </section>
-
-        <section className="section section--flush">
-          <SectionHeading index="02 / Approach" title="How I work" />
-          <div className="grid grid--3 grid--wide grid--cap" style={{ textAlign: "center" }}>
-            {APPROACH.map((a) => (
-              <div
-                key={a.title}
-                style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)" }}
-              >
-                <Icon name={a.icon} size="xl" color="var(--ignition-500)" />
-                <div style={{ font: "var(--type-h3)", color: "var(--text-primary)" }}>{a.title}</div>
-                <div style={{ font: "var(--type-body-sm)", color: "var(--text-muted)", maxWidth: "30ch" }}>
-                  {a.description}
-                </div>
-              </div>
-            ))}
-          </div>
-          <Callout tone="accent" title="Right now" style={{ maxWidth: 640 }}>
-            {PROFILE.seeking}
-          </Callout>
         </section>
       </div>
     </>

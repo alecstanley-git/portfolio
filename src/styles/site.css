@@ -36,6 +36,19 @@ html { scroll-behavior: smooth; }
 
 .skip-link:focus-visible { transform: none; }
 
+/* Text carried to assistive tech only — for information the layout conveys
+   visually (colour, a hover swap) and would otherwise lose. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* --- Containers and sections --------------------------------------------- */
 
 .container {
@@ -133,6 +146,100 @@ html { scroll-behavior: smooth; }
   flex-direction: column;
   gap: var(--space-5);
 }
+
+/* --- Discipline chips ---------------------------------------------------- */
+/* Hero chips carrying the degree specialisations. Same metrics as the Tag
+   primitive, but the label crossfades to "Major"/"Minor" on hover, which Tag's
+   inline styling cannot express. Majors take ignition, minors take plasma. */
+
+.disc-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding-inline: var(--space-2);
+  font: var(--weight-medium) var(--text-xs) / 1 var(--font-mono);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  cursor: default;
+  transition: background var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
+}
+
+.disc-tag--major {
+  color: var(--ignition-400);
+  background: var(--ignition-tint);
+  border-color: var(--ignition-tint-strong);
+}
+
+/* Minors take the neutral tone. Plasma is the system's only other colour, but
+   it is reserved for data — charts, quantities, note callouts — and putting it
+   beside ignition in the hero gives one viewport two competing signal colours. */
+.disc-tag--minor {
+  color: var(--text-muted);
+  background: var(--hull-800);
+  border-color: var(--border-hairline);
+}
+
+/* Ignition lifts its border to the full signal colour, the same move base.css
+   makes on links; the neutral chip steps hairline → strong, per the states
+   table. Backgrounds are left alone so the pair reads as one row. */
+.disc-tag--major:hover { border-color: var(--ignition-500); }
+.disc-tag--minor:hover { border-color: var(--border-strong); }
+
+/* Both labels share one grid cell, so the chip keeps the wider label's width
+   and nothing reflows when the text swaps. */
+.disc-tag__swap { display: grid; }
+
+.disc-tag__swap > * {
+  grid-area: 1 / 1;
+  justify-self: center;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+
+.disc-tag__kind { opacity: 0; }
+
+.disc-tag:hover .disc-tag__label { opacity: 0; }
+.disc-tag:hover .disc-tag__kind { opacity: 1; }
+
+/* --- Copy-email control -------------------------------------------------- */
+/* The address is a copy action, not a mailto link, so it is a button wearing
+   link clothing. Declared before .fact__value so that rule still wins on type. */
+
+.copy-email {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--ignition-tint-strong);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-instant) var(--ease-standard);
+}
+
+.copy-email:hover {
+  color: var(--text-link-hover);
+  border-bottom-color: var(--ignition-500);
+}
+
+/* Same 1px press nudge the Button primitive uses. */
+.copy-email:active { transform: translateY(1px); }
+
+.copy-email svg {
+  color: var(--text-faint);
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+/* Accent text sits at 400 on hover, matching IconButton and the link tokens. */
+.copy-email:hover svg { color: var(--ignition-400); }
 
 /* --- Contact facts ------------------------------------------------------- */
 

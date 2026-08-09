@@ -17,6 +17,7 @@ export { ProjectCard } from "./content/ProjectCard.jsx";
 export { SkillMeter } from "./content/SkillMeter.jsx";
 export { StatBlock } from "./content/StatBlock.jsx";
 export { TimelineEntry } from "./content/TimelineEntry.jsx";
+export { ToastProvider, useToast } from "./content/Toast.jsx";
 export { VideoEmbed } from "./content/VideoEmbed.jsx";
 
 export { Select } from "./forms/Select.jsx";

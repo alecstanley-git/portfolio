@@ -10,8 +10,9 @@ import {
   Tag,
   VideoEmbed,
 } from "../components/index.js";
-import { PROFILE, PROJECTS, findProject } from "../data/content.js";
+import { PROJECTS, findProject } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
+import { useCopyEmail } from "../lib/useCopyEmail.js";
 
 const sectionLabel = {
   font: "var(--type-label)",
@@ -57,6 +58,7 @@ function ProjectPager({ project }) {
 export default function ProjectDetail() {
   const { slug } = useParams();
   const project = findProject(slug);
+  const { copy: copyEmail, copied: emailCopied } = useCopyEmail();
 
   usePageMeta(project?.title, project?.summary);
 
@@ -229,12 +231,8 @@ export default function ProjectDetail() {
             Happy to share methodology, code and raw data.
           </div>
         </div>
-        <Button
-          as="a"
-          href={`mailto:${PROFILE.email}?subject=${encodeURIComponent(`${project.id} — ${project.title}`)}`}
-          iconRight="mail"
-        >
-          Get in touch
+        <Button onClick={copyEmail} iconRight={emailCopied ? "check" : "copy"}>
+          Copy email address
         </Button>
       </Card>
 

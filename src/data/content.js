@@ -25,8 +25,8 @@ export const PROFILE = {
   title: "Aerospace engineering (Honours) and astrophysics",
   institution: "Monash University, Clayton",
   email: "contact@alecstanley.com",
-  phone: "+61 413 970 596",
   linkedin: "https://www.linkedin.com/in/alec-stanley-0a483b195/",
+  github: "https://github.com/alecstanley-git/",
   location: "Melbourne, VIC",
   get cvUrl() {
     return asset("alec-stanley-cv.pdf");
@@ -386,8 +386,8 @@ export const TIMELINE = [
     title: "Resident Advisor",
     org: "Richardson Hall, Monash University",
     description:
-      "Ran events and handled sensitive incidents for a diverse student population — active listening, composure and adaptability under complex interpersonal dynamics.",
-    tags: ["Leadership", "Incident response"],
+      "Pastoral care and first response for a residential floor across three semesters: overnight on-call roster, floor events, welfare check-ins, and after-hours incidents de-escalated with mental health first aid and escalated to hall management.",
+    tags: ["Pastoral care", "On-call duty", "Incident response"],
   },
   {
     period: "2019 — NOW",
@@ -407,43 +407,13 @@ export const TIMELINE = [
   },
 ];
 
-export const SKILLS = [
-  {
-    group: "Programming",
-    items: [
-      { label: "python", level: 5, note: "simulation & analysis" },
-      { label: "MATLAB", level: 5, note: "modelling" },
-      { label: "C / C++", level: 4, note: "HD portfolio" },
-      { label: "Mathematica", level: 4, note: "advanced modelling" },
-      { label: "Numerical analysis", level: 4, note: "integrators, CFD" },
-      { label: "Arduino and robotics", level: 4, note: "Warman rover" },
-    ],
-  },
-  {
-    group: "Engineering",
-    items: [
-      { label: "SolidWorks — CSWA certified", level: 5, note: "98% exam" },
-      { label: "Mathematical modelling", level: 4, note: "core" },
-      { label: "3D printing", level: 4, note: "prototyping" },
-      { label: "Laser cutting & workshop", level: 3, note: "Warman build" },
-    ],
-  },
-  {
-    group: "Science",
-    items: [
-      { label: "Aerodynamics", level: 4, note: "CFD, wind tunnel" },
-      { label: "Thermodynamics", level: 4, note: "engines, heat transfer" },
-      { label: "Rigid body dynamics", level: 4, note: "spacecraft attitude" },
-      { label: "Gravity and relativity", level: 4, note: "astrophysics major" },
-      { label: "Quantum mechanics", level: 3, note: "physics minor" },
-    ],
-  },
-];
-
-export const INTERESTS = ["Running", "Muay Thai kickboxing", "Time with friends"];
-
-export const APPROACH = [
-  { icon: "ruler", title: "Model it", description: "An analytical first pass before any solver runs." },
-  { icon: "cpu", title: "Simulate it", description: "CAD, numerical modelling or code — with a sanity check." },
-  { icon: "gauge", title: "Measure it", description: "Test the real thing and close the loop on the model." },
+/* Hero chips — the degree's majors and minors. `kind` is what the chip reveals
+   on hover, and it also picks the tone: majors take ignition, minors neutral.
+   Lowercase per the system's tag casing: these are common nouns, not as-written
+   product names. Distinct from DISCIPLINES above, the project filter's list. */
+export const STUDY_AREAS = [
+  { label: "aerospace engineering", kind: "major" },
+  { label: "astrophysics", kind: "major" },
+  { label: "mathematics", kind: "minor" },
+  { label: "physics", kind: "minor" },
 ];
