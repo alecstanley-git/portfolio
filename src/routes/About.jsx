@@ -29,7 +29,7 @@ export default function About() {
           maxWidth: "var(--container-narrow)",
         }}
       >
-        <SectionHeading index="01 / About" title="Perth to Melbourne, hardware to data" />
+        <SectionHeading index="01 / About" title="Perth to Melbourne" />
         <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "58ch" }}>
           I'm studying a Bachelor of Engineering (Honours) and Bachelor of Science at Monash University, Clayton —
           specialising in aerospace engineering and astrophysics, with completed minors in physics and mathematics.
