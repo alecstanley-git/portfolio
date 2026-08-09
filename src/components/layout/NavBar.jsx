@@ -5,9 +5,13 @@ import "./NavBar.css";
 export function NavBar({ brand = "Alec Stanley", items = [], action }) {
   return (
     <nav className="nav no-print" aria-label="Primary">
-      <NavLink to="/" className="nav__brand">
-        {brand}
-      </NavLink>
+      {/* Brand and action sit in equal-width flex tracks so the link list is
+          centred on the viewport, not on the space left between them. */}
+      <div className="nav__side">
+        <NavLink to="/" className="nav__brand">
+          {brand}
+        </NavLink>
+      </div>
       <ul className="nav__links">
         {items.map((it) => (
           <li key={it.to}>
@@ -21,7 +25,7 @@ export function NavBar({ brand = "Alec Stanley", items = [], action }) {
           </li>
         ))}
       </ul>
-      <div className="nav__action">{action}</div>
+      <div className="nav__side nav__side--end nav__action">{action}</div>
     </nav>
   );
 }
