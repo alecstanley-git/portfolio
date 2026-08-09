@@ -38,7 +38,6 @@ export const PROFILE = {
     "I'm in my fourth year of a five-year Bachelor of Engineering (Honours) and Bachelor of Science at Monash University, specialising in aerospace engineering and astrophysics. This is a collection of the technical projects I've worked on over the last few years.",
   seeking:
     "Currently looking for undergraduate internship roles in engineering design, simulation, and testing for the 2026/2027 break.",
-  lastUpdated: "2026-08",
 };
 
 const project = (o) => {

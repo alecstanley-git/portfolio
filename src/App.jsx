@@ -67,10 +67,9 @@ function PageShell() {
         links={[
           { icon: "linkedin", label: "LinkedIn", href: PROFILE.linkedin },
           { icon: "github", label: "GitHub", href: PROFILE.github },
-          { icon: copied ? "check" : "copy", label: "Copy email address", onClick: copy },
           { icon: "file-text", label: "CV", href: PROFILE.cvUrl },
         ]}
-        note={`Melbourne, VIC · Monash University, Clayton · Last updated ${PROFILE.lastUpdated}`}
+        note={PROFILE.institution}
       />
     </div>
   );
