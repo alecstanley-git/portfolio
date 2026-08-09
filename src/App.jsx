@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Button, Footer, NavBar, ToastProvider } from "./components/index.js";
+import { Backdrop, Button, Footer, NavBar, ToastProvider } from "./components/index.js";
 import { PROFILE } from "./data/content.js";
 import { useCopyEmail } from "./lib/useCopyEmail.js";
 
@@ -35,6 +35,7 @@ function PageShell() {
 
   return (
     <div className="page">
+      <Backdrop />
       <ScrollToTop />
       <a className="skip-link" href="#main">
         Skip to content

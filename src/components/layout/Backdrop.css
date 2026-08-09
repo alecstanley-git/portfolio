@@ -1,0 +1,29 @@
+/* The page backdrop. Every value comes from the token set: no new colour, no
+   new sizes, nothing that loops. See the Backgrounds rule in the design system
+   readme for what this layer is allowed to do. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  /* Behind everything. At z-index 0 a positioned layer paints ABOVE the page's
+     non-positioned block content, which would put the grid over the text. */
+  z-index: -1;
+  pointer-events: none;
+
+  /* Written by the scroll listener. The fallback keeps the layer correct when
+     motion is reduced and nothing ever writes to it. */
+  --scroll-y: 0px;
+
+  /* Parallax: the grid creeps at a fraction of the page's own rate. This is a
+     background-position shift rather than a transform, so the pattern tiles
+     forever and no edge can be exposed however long the page runs. */
+  background-image: var(--bg-grid-image);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: 0 calc(var(--scroll-y) * -0.15);
+
+  /* A horizon: full strength at the top of the viewport, gone before the
+     bottom, so the lower half of every screen stays flat. Viewport-fixed, so
+     the fade holds its position on screen rather than sliding away. */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 18%, transparent 78%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 18%, transparent 78%);
+}

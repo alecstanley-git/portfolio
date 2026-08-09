@@ -4,6 +4,7 @@ export { Icon } from "./core/Icon.jsx";
 export { IconButton } from "./core/IconButton.jsx";
 export { Tag } from "./core/Tag.jsx";
 
+export { Backdrop } from "./layout/Backdrop.jsx";
 export { Card } from "./layout/Card.jsx";
 export { Footer } from "./layout/Footer.jsx";
 export { NavBar } from "./layout/NavBar.jsx";
