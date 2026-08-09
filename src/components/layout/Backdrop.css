@@ -1,58 +1,29 @@
-/* TRIAL LAYER — see the note at the top of Backdrop.jsx. Every value here comes
-   from the token set: no new colour, no new sizes, nothing that loops. */
+/* The page backdrop. Every value comes from the token set: no new colour, no
+   new sizes, nothing that loops. See the Backgrounds rule in the design system
+   readme for what this layer is allowed to do. */
 
 .backdrop {
   position: fixed;
   inset: 0;
   /* Behind everything. At z-index 0 a positioned layer paints ABOVE the page's
-     non-positioned block content, which would put the pattern over the text. */
+     non-positioned block content, which would put the grid over the text. */
   z-index: -1;
   pointer-events: none;
 
-  /* Written by the scroll listener; the fallbacks keep the layer correct when
-     motion is reduced and nothing ever writes to them. */
+  /* Written by the scroll listener. The fallback keeps the layer correct when
+     motion is reduced and nothing ever writes to it. */
   --scroll-y: 0px;
-  --scroll-progress: 0;
 
-  /* Parallax: the pattern creeps at a fraction of the page's own rate. These
-     are background-position shifts rather than transforms, so the pattern tiles
-     forever and no edge can be exposed however long the page is. */
-  --drift: calc(var(--scroll-y) * -0.15);
+  /* Parallax: the grid creeps at a fraction of the page's own rate. This is a
+     background-position shift rather than a transform, so the pattern tiles
+     forever and no edge can be exposed however long the page runs. */
+  background-image: var(--bg-grid-image);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: 0 calc(var(--scroll-y) * -0.15);
 
   /* A horizon: full strength at the top of the viewport, gone before the
      bottom, so the lower half of every screen stays flat. Viewport-fixed, so
      the fade holds its position on screen rather than sliding away. */
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 18%, transparent 78%);
   mask-image: linear-gradient(180deg, #000 0%, #000 18%, transparent 78%);
-}
-
-/* --- grid: the 32px blueprint grid, the system's own "flight deck" motif --- */
-
-.backdrop--grid {
-  background-image: var(--bg-grid-image);
-  background-size: var(--grid-size) var(--grid-size);
-  background-position: 0 var(--drift);
-}
-
-/* --- rules: hairlines on the section rhythm ------------------------------- */
-/* Takes --grid-line (7%) rather than --border-hairline (16%): a full-bleed line
-   every 96px at border weight reads as ruled paper, not as a backdrop. */
-
-.backdrop--rules {
-  --drift: calc(var(--scroll-y) * -0.3);
-  background-image: repeating-linear-gradient(
-    180deg,
-    var(--grid-line) 0 1px,
-    transparent 1px var(--section-y)
-  );
-  background-position: 0 var(--drift);
-}
-
-/* --- scanline: the instrument-panel texture ------------------------------- */
-/* --bg-scanline has a 3px period, so positional drift would alias into a
-   strobe. It stays pinned and answers scroll with density instead. */
-
-.backdrop--scanline {
-  background-image: var(--bg-scanline);
-  opacity: calc(0.7 + var(--scroll-progress) * 0.3);
 }
