@@ -65,14 +65,24 @@ export function ProjectCard({
               position: "absolute",
               inset: "0 0 auto 0",
               height: 72,
-              background: "linear-gradient(to bottom, rgba(5, 7, 10, 0.72), transparent)",
+              /* Holds near-full strength behind the badge before falling away,
+                 rather than fading from the very first pixel — the brightest
+                 covers washed the badge out under a single-stop ramp. */
+              background:
+                "linear-gradient(to bottom, rgba(5, 7, 10, 0.92), rgba(5, 7, 10, 0.72) 46%, transparent)",
             }}
           />
         ) : null}
+        {/* Positioned directly, with no wrapper: an absolutely-positioned span
+            becomes a block, and its line box left the badge sitting 5px lower
+            than its offset — 17px from the top against 12px from the right. */}
         {status ? (
-          <span style={{ position: "absolute", top: "var(--space-3)", right: "var(--space-3)" }}>
-            <Badge tone={status.tone}>{status.label}</Badge>
-          </span>
+          <Badge
+            tone={status.tone}
+            style={{ position: "absolute", top: "var(--space-3)", right: "var(--space-3)" }}
+          >
+            {status.label}
+          </Badge>
         ) : null}
       </div>
       <div
