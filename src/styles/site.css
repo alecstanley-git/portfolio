@@ -120,16 +120,27 @@ html { scroll-behavior: smooth; }
 .stat-rail {
   max-width: var(--container-max);
   margin: var(--space-16) auto 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-20);
   padding-block: var(--space-8) var(--space-16);
   border-top: 1px solid var(--border-hairline);
   text-align: center;
 }
 
-.stat-rail > * { align-items: center; }
+/* Equal columns, sized to the widest block. Laid out as flex, each block took
+   its own label's width — "Graduation" against "WAM" put the figures at
+   irregular intervals even though the group as a whole was centred. Sizing the
+   grid to fit-content keeps the group tight while the rule above it stays full
+   width. */
+.stat-rail__row {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-20);
+}
+
+.stat-rail__row > * { align-items: center; }
 
 /* --- Clusters ------------------------------------------------------------ */
 
@@ -307,7 +318,7 @@ a.fact__value:hover { color: var(--text-link-hover); border-bottom-color: var(--
 @media (max-width: 1000px) {
   .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero__title { font: var(--weight-bold) var(--text-5xl) / var(--leading-tight) var(--font-display); }
-  .stat-rail { gap: var(--space-12); }
+  .stat-rail__row { gap: var(--space-12); }
 }
 
 @media (max-width: 720px) {
@@ -325,14 +336,21 @@ a.fact__value:hover { color: var(--text-link-hover); border-bottom-color: var(--
   .hero__inner { padding-block-start: var(--space-16); }
   .hero__title { font: var(--weight-bold) var(--text-4xl) / var(--leading-snug) var(--font-display); }
 
-  .stat-rail { gap: var(--space-8) var(--space-10); margin-top: var(--space-10); }
+  .stat-rail { margin-top: var(--space-10); }
+  .stat-rail__row { gap: var(--space-10); }
 
   h1 { font: var(--weight-bold) var(--text-3xl) / var(--leading-snug) var(--font-display); }
 }
 
 @media (max-width: 460px) {
   .hero__title { font: var(--weight-bold) var(--text-3xl) / var(--leading-snug) var(--font-display); }
-  .stat-rail { gap: var(--space-6) var(--space-8); }
+  /* Below this the three columns would squeeze the labels, so the row stacks
+     rather than compressing. */
+  .stat-rail__row {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    gap: var(--space-6);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

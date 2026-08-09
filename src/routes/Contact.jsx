@@ -1,4 +1,4 @@
-import { Button, Callout, Card, Icon, SectionHeading } from "../components/index.js";
+import { Button, Card, Icon, SectionHeading } from "../components/index.js";
 import { PROFILE } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 import { useCopyEmail } from "../lib/useCopyEmail.js";
@@ -70,8 +70,8 @@ export default function Contact() {
           >
             <div style={{ font: "var(--type-h2)", color: "var(--text-primary)" }}>Email is the fastest way</div>
             <p style={{ font: "var(--type-body-sm)", color: "var(--text-muted)", maxWidth: "48ch" }}>
-              I reply within a couple of days. If you're asking about a specific project, name the code — P-013, P-011
-              and so on — and I'll send the report, the code and the raw data.
+              I reply within a couple of days. If you're asking about a specific project, name the code (P-013, P-011
+              and so on) and I'll be happy to discuss the work further and offer more resources.
             </p>
             <div className="cluster cluster--actions">
               {/* Label stays fixed so the confirmation state does not reflow
@@ -93,10 +93,6 @@ export default function Contact() {
             </div>
           </div>
         </Card>
-
-        <Callout tone="accent" title="Availability" style={{ maxWidth: 640 }}>
-          {PROFILE.seeking}
-        </Callout>
       </section>
     </div>
   );

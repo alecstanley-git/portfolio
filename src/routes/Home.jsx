@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button, ProjectCard, SectionHeading, StatBlock } from "../components/index.js";
+import { Button, Callout, ProjectCard, SectionHeading, StatBlock } from "../components/index.js";
 import { FEATURED, PROFILE, PROJECTS, STUDY_AREAS } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
@@ -72,9 +72,13 @@ function Hero() {
           </div>
         </div>
         <div className="stat-rail">
-          <StatBlock value="2027" label="Graduation" />
-          <StatBlock value={PROJECTS.length} label="Technical projects" tone="accent" />
-          <StatBlock value="77.1" label="WAM" />
+          {/* The rail keeps the full-width rule; the row inside it is what
+              carries the equal columns. */}
+          <div className="stat-rail__row">
+            <StatBlock value="2027" label="Graduation" />
+            <StatBlock value={PROJECTS.length} label="Projects" tone="accent" />
+            <StatBlock value="77.1" label="WAM" />
+          </div>
         </div>
       </div>
     </section>
@@ -93,6 +97,9 @@ export default function Home() {
 
       <div className="container">
         <section className="section">
+          <Callout tone="accent" title="Availability" style={{ maxWidth: 640 }}>
+            {PROFILE.seeking}
+          </Callout>
           <SectionHeading
             index="01 / Selected work"
             title="Featured projects"
