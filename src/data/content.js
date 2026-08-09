@@ -386,7 +386,7 @@ export const TIMELINE = [
     title: "Resident Advisor",
     org: "Richardson Hall, Monash University",
     description:
-      "Pastoral care and first response for a residential floor across three semesters: overnight on-call roster, floor events, welfare check-ins, and after-hours incidents de-escalated with mental health first aid and escalated to hall management.",
+      "Pastoral care and first response across a community of 200 residents over three semesters: overnight on-call roster, community events, welfare check-ins, and after-hours incidents de-escalated with mental health first aid and escalated to hall management.",
     tags: ["Pastoral care", "On-call duty", "Incident response"],
   },
   {
