@@ -16,7 +16,14 @@ html { scroll-behavior: smooth; }
   min-height: 100dvh;
 }
 
-.page__main { flex: 1 0 auto; }
+/* The nav is fixed, so it no longer occupies flow — main reserves its height.
+   NavBar measures itself into --nav-h because the bar wraps to two rows below
+   720px, so no single hardcoded value is correct at every width. The fallback
+   is the desktop height, used for the first paint before the measurement lands. */
+.page__main {
+  flex: 1 0 auto;
+  padding-top: var(--nav-h, 64px);
+}
 
 .skip-link {
   position: absolute;

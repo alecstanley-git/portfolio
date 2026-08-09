@@ -1,6 +1,11 @@
+/* Fixed rather than sticky. A sticky bar sits in document flow, so an elastic
+   overscroll carries it away from the top edge while the fixed backdrop behind
+   it stays put — two layers moving apart, which reads as a rendering fault.
+   Fixed pins it to the viewport, so the page can bounce underneath it. */
 .nav {
-  position: sticky;
+  position: fixed;
   top: 0;
+  inset-inline: 0;
   z-index: 40;
   display: flex;
   align-items: center;

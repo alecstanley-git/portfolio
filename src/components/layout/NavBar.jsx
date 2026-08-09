@@ -1,10 +1,30 @@
+import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import "./NavBar.css";
 
-/** Sticky top navigation: wordmark, section links, one primary action. */
+/** Fixed top navigation: wordmark, section links, one primary action. */
 export function NavBar({ brand = "Alec Stanley", items = [], action }) {
+  const ref = useRef(null);
+
+  /* The bar is fixed, so the page has to reserve its height itself. It wraps to
+     two rows below 720px, so that height is not a constant — publish the
+     measured value and let the layout read it. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const publish = () => {
+      document.documentElement.style.setProperty("--nav-h", `${el.offsetHeight}px`);
+    };
+
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <nav className="nav no-print" aria-label="Primary">
+    <nav ref={ref} className="nav no-print" aria-label="Primary">
       {/* Brand and action sit in equal-width flex tracks so the link list is
           centred on the viewport, not on the space left between them. */}
       <div className="nav__side">
