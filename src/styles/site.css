@@ -87,7 +87,9 @@ html { scroll-behavior: smooth; }
 
 /* --- Hero ---------------------------------------------------------------- */
 
-.hero { border-bottom: 1px solid var(--border-hairline); background: var(--surface-page); }
+/* Transparent, not --surface-page: that was a restatement of the body colour,
+   and an opaque one would occlude the backdrop layer behind the page. */
+.hero { border-bottom: 1px solid var(--border-hairline); background: transparent; }
 
 .hero__inner {
   max-width: var(--container-narrow);
