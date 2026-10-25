@@ -78,6 +78,35 @@ export const RETIRED_IDS = [];
 /* Kept in date order here too, for readability; the sort below is what counts. */
 const ENTRIES = [
   project({
+    id: "P-018",
+    title: "PW4000 Turbofan Cycle Analysis",
+    discipline: "Aerospace",
+    date: "2026-10-17",
+    summary:
+      "A python model of the PW4000 twin-spool turbofan, predicting net thrust and TSFC from sea level to 15 km and the top Mach number for positive thrust.",
+    tags: ["python", "thermodynamics", "gas turbines", "propulsion"],
+    body: [
+      "I modelled the design-point cruise performance of the Pratt & Whitney PW4000, a twin-spool high-bypass turbofan with separate hot and cold nozzles, on a twin-engine passenger aircraft. The low pressure turbine drives the fan and the low pressure compressor, and the high pressure turbine drives the high pressure compressor.",
+      { heading: "Method" },
+      "The whole cycle runs in a single python script, station by station from the intake through both spools to the hot and cold nozzles, using ISA conditions in 0.5 km steps. At every step the script checks whether each nozzle is choked and uses the unchoked relations where it is not. The station schematic and the P-v and T-s diagrams set out the states and processes.",
+      { heading: "Results" },
+      { list: [
+        "At Mach 0.75 and a fuel-air ratio of 3%, net thrust falls from 348 kN per engine at sea level to 50.2 kN at 15 km, following the fall in air mass flow.",
+        "TSFC improves slightly with altitude, from 0.0833 kg/(N·h) at sea level to 0.0792 kg/(N·h) at 11 km, and stays constant above 11 km where the ambient temperature is constant.",
+        "At a fuel-air ratio of 2.5%, the engine produces positive thrust at every altitude right up to the Mach 1 limit, with 328 kN per engine at sea level.",
+      ] },
+      { heading: "Feasibility check" },
+      "Every pressure and temperature in the cycle stays positive, and both jets leave faster than the flight speed. The intake is what limits the engine. At sea level and Mach 1 it would need to carry 2112 kg/s of air, but it chokes at 2051 kg/s, so the extra air would spill around the nacelle.",
+    ],
+    result: "Found the intake chokes at about Mach 0.85, well before the idealised Mach 1 result.",
+    images: [
+      { file: "engine-schematic.png", caption: "Labelled schematic of a single engine, with both spools and the bypass split marked." },
+      { file: "p-v-diagram.png", caption: "P-v diagram of the states and processes inside the engine, not to scale." },
+      { file: "t-s-diagram.png", caption: "T-s diagram of the states and processes inside the engine, not to scale." },
+    ],
+    attachments: [{ label: "Full report", file: "report.pdf" }],
+  }),
+  project({
     id: "P-017",
     title: "Introduction to Programming — C++ Portfolio",
     discipline: "Software",

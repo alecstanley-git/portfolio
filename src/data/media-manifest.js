@@ -227,5 +227,26 @@ export default {
       "path": "media/p-001/aperturephotometryreport.pdf",
       "pages": 9
     }
+  },
+  "p-018": {
+    "engine-schematic.png": {
+      "path": "media/p-018/engine-schematic.webp",
+      "w": 1600,
+      "h": 633
+    },
+    "p-v-diagram.png": {
+      "path": "media/p-018/p-v-diagram.webp",
+      "w": 1593,
+      "h": 1293
+    },
+    "t-s-diagram.png": {
+      "path": "media/p-018/t-s-diagram.webp",
+      "w": 1600,
+      "h": 1163
+    },
+    "report.pdf": {
+      "path": "media/p-018/report.pdf",
+      "pages": 21
+    }
   }
 };
