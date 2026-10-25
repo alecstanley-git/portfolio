@@ -97,16 +97,21 @@ export default function Home() {
           <Callout tone="accent" title="Availability" style={{ maxWidth: 640 }}>
             {PROFILE.seeking}
           </Callout>
-          <SectionHeading
-            index={HOME.starred.index}
-            title={HOME.starred.title}
-            lede={HOME.starred.lede}
-          />
-          <div className="grid grid--2 grid--cap">
-            {STARRED.map((p) => (
-              <ProjectCard key={p.id} {...cardProps(p)} />
-            ))}
-          </div>
+          {/* Nothing starred: no heading over an empty grid, just the link below. */}
+          {STARRED.length ? (
+            <>
+              <SectionHeading
+                index={HOME.starred.index}
+                title={HOME.starred.title}
+                lede={HOME.starred.lede}
+              />
+              <div className="grid grid--2 grid--cap grid--starred">
+                {STARRED.map((p) => (
+                  <ProjectCard key={p.id} {...cardProps(p)} />
+                ))}
+              </div>
+            </>
+          ) : null}
           <Button as={Link} to="/work" variant="ghost" iconRight="arrow-right">
             All projects
           </Button>

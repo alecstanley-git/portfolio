@@ -92,6 +92,13 @@ html { scroll-behavior: smooth; }
 .grid--wide { gap: var(--space-10); }
 .grid--cap { max-width: 900px; }
 
+/* Odd count: the last starred card sits alone, centred at one column's width. */
+.grid--starred > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: calc((100% - var(--space-6)) / 2);
+}
+
 /* --- Hero ---------------------------------------------------------------- */
 
 /* Transparent, not --surface-page: that was a restatement of the body colour,
@@ -346,6 +353,7 @@ a.fact__value:hover { color: var(--text-link-hover); border-bottom-color: var(--
 
   .grid--2,
   .grid--3 { grid-template-columns: minmax(0, 1fr); }
+  .grid--starred > :last-child:nth-child(odd) { grid-column: auto; width: 100%; }
   .grid--wide { gap: var(--space-8); }
   .facts { grid-template-columns: minmax(0, 1fr); }
 
