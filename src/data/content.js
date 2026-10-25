@@ -78,6 +78,39 @@ export const RETIRED_IDS = [];
 /* Kept in date order here too, for readability; the sort below is what counts. */
 const ENTRIES = [
   project({
+    id: "P-020",
+    title: "Gas Turbine Efficiency Laboratory",
+    discipline: "Aerospace",
+    date: "2026-10-25",
+    starred: true,
+    summary:
+      "Lab testing of a Cussons gas turbine from 1000 to 1500 RPS, measuring thrust, TSFC and component performance, and explaining why burner efficiency came out above 1.",
+    tags: ["gas turbines", "propulsion", "thermodynamics", "experimental testing"],
+    body: [
+      "I tested a small Cussons gas generator, with its compressor and turbine on one shaft and a single propane combustor, at speeds from 1000 to 1500 RPS. All readings were corrected to standard conditions (288 K, 101.325 kPa) so the six tests could be compared.",
+      { heading: "Results" },
+      { list: [
+        "Thrust nearly doubled, from 21.8 to 41.4 N, driven mainly by exit velocity (159 to 263 m/s) rather than mass flow.",
+        "The compressor pressure ratio rose from 1.32 to 1.63 and the fuel-air ratio from 0.0079 to 0.0124, a very lean mixture.",
+        "TSFC stayed roughly flat at 0.17 to 0.18 kg/N·hr, about double a typical turbojet, because of the low pressure ratio.",
+      ] },
+      { heading: "Discussion" },
+      "Burner efficiency came out between 1.19 and 1.61, and the compressor-to-turbine power ratio between 0.22 and 0.30 instead of about 1. Neither is physically possible. Both point to a combustor-exit temperature that reads high, since a single thermocouple sits in unmixed hot gas, and possibly to an under-read fuel flow.",
+    ],
+    result: "Thrust rose from 22 to 41 N across the speed range, with TSFC roughly constant at 0.17 kg/N·hr.",
+    caveat: "Room temperature rose from 30 to 45 °C during testing, so the tests are not evenly spaced in corrected speed.",
+    images: [
+      { file: "02.jpg", caption: "Control panel of the Cussons two-shaft gas turbine rig used in this laboratory." },
+      { file: "fuel-air-ratio.png", caption: "Fuel-air ratio against corrected gas generator speed." },
+      { file: "compressor-pressure-ratio.png", caption: "Compressor pressure ratio against corrected gas generator speed." },
+      { file: "net-thrust.png", caption: "Net thrust against corrected gas generator speed." },
+      { file: "tsfc.png", caption: "Thrust specific fuel consumption against corrected gas generator speed." },
+      { file: "power-ratio.png", caption: "Ratio of compressor power to turbine power against corrected gas generator speed." },
+      { file: "burner-efficiency.png", caption: "Burner efficiency against corrected gas generator speed." },
+    ],
+    attachments: [{ label: "Full report", file: "report.pdf" }],
+  }),
+  project({
     id: "P-019",
     title: "Automated Detection of Pork Rasher Packaging Errors and Meat Quality",
     discipline: "Software",
@@ -138,12 +171,13 @@ const ENTRIES = [
   }),
   project({
     id: "P-017",
-    title: "Introduction to Programming — C++ Portfolio",
+    title: "N-Body Gravitational Simulator in C++",
     discipline: "Software",
     date: "2026-06-07",
+    starred: true,
     grade: "HD",
     summary:
-      "A portfolio-based first-year unit introducing C++. The high-distinction project is an n-body gravitational simulator.",
+      "An n-body gravitational simulator built in C++, with its own physics engine, plotting engine and window manager. The high-distinction project of a first-year programming unit.",
     tags: ["C++", "OOP", "data structures", "physics engine"],
     body: [
       "The portfolio builds through increasing levels of expertise, with reflections and the code I wrote at each stage. Notable work: memory management, sorting algorithms, procedural and object-oriented programming, and building my own data stores — linked lists, vectors and arrays.",
@@ -164,6 +198,7 @@ const ENTRIES = [
     title: "Photometric Distance and Age of the Open Cluster NGC 2175",
     discipline: "Astrophysics",
     date: "2026-05-31",
+    starred: true,
     summary:
       "Determining the age and distance of NGC 2175 using R, V and B band observations from a consumer-grade telescope and computational photometry.",
     tags: ["photometry", "python", "observational astronomy"],
@@ -197,7 +232,6 @@ const ENTRIES = [
     title: "Galaxy Collision Simulation",
     discipline: "Astrophysics",
     date: "2025-10-30",
-    starred: true,
     grade: "HD",
     summary:
       "A python program simulating the collision of two galaxies under Newton's laws of gravitation, modelling the observed collision between M51 and NGC 5195.",

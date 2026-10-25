@@ -269,5 +269,46 @@ export default {
       "path": "media/p-019/report.pdf",
       "pages": 14
     }
+  },
+  "p-020": {
+    "02.jpg": {
+      "path": "media/p-020/02.webp",
+      "w": 1600,
+      "h": 1200
+    },
+    "fuel-air-ratio.png": {
+      "path": "media/p-020/fuel-air-ratio.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "compressor-pressure-ratio.png": {
+      "path": "media/p-020/compressor-pressure-ratio.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "net-thrust.png": {
+      "path": "media/p-020/net-thrust.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "tsfc.png": {
+      "path": "media/p-020/tsfc.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "power-ratio.png": {
+      "path": "media/p-020/power-ratio.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "burner-efficiency.png": {
+      "path": "media/p-020/burner-efficiency.webp",
+      "w": 1260,
+      "h": 930
+    },
+    "report.pdf": {
+      "path": "media/p-020/report.pdf",
+      "pages": 14
+    }
   }
 };

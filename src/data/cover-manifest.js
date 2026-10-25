@@ -95,5 +95,10 @@ export default {
     "path": "media/p-019/cover.webp",
     "w": 900,
     "h": 450
+  },
+  "p-020": {
+    "path": "media/p-020/cover.webp",
+    "w": 900,
+    "h": 675
   }
 };
