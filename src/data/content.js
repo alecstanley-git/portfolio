@@ -507,8 +507,36 @@ export const ABOUT = {
       "I grew up in Perth, Western Australia and moved east at 18 to study in Melbourne. Alongside my degree I've led a residential community as a Resident Advisor and supervised teams at Coles — both of which taught me to stay composed and communicate clearly under pressure.",
     ],
   },
-  timeline: { index: "02 / Education & experience", title: "Study, leadership and work" },
+  skills: { index: "02 / Skills", title: "Tools and methods" },
+  timeline: { index: "03 / Education & experience", title: "Study, leadership and work" },
 };
+
+/* About page skills, word for word from the CV's Skills section. Keep the two
+   in step: when the CV changes, update this list. */
+export const SKILLS = [
+  {
+    group: "Programming",
+    items: ["Python (NumPy, Matplotlib, multiprocessing)", "MATLAB", "C++", "Mathematica", "Arduino", "Git"],
+  },
+  {
+    group: "Simulation & Analysis",
+    items: [
+      "CFD (SU2)",
+      "large-eddy simulation",
+      "aerodynamics",
+      "compressible flow",
+      "boundary layer theory",
+      "rigid-body and attitude dynamics",
+      "numerical integration",
+      "thermodynamics",
+      "photometry",
+    ],
+  },
+  {
+    group: "Design & Fabrication",
+    items: ["SolidWorks (CSWA, 235/240)", "3D printing", "laser cutting", "electronics"],
+  },
+];
 
 export const CONTACT = {
   index: "01 / Contact",

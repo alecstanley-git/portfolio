@@ -1,5 +1,5 @@
-import { Button, Inline, SectionHeading, TimelineEntry } from "../components/index.js";
-import { ABOUT, PROFILE, SITE_META, TIMELINE } from "../data/content.js";
+import { Button, Inline, SectionHeading, Tag, TimelineEntry } from "../components/index.js";
+import { ABOUT, PROFILE, SITE_META, SKILLS, TIMELINE } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function About() {
@@ -42,6 +42,22 @@ export default function About() {
         >
           Download full CV
         </Button>
+      </section>
+
+      <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-8)", width: "100%" }}>
+        <SectionHeading index={ABOUT.skills.index} title={ABOUT.skills.title} />
+        <div className="skill-groups">
+          {SKILLS.map((g) => (
+            <div key={g.group} className="skill-group">
+              <span className="skill-group__label">{g.group}</span>
+              <div className="cluster" style={{ justifyContent: "flex-start", gap: "var(--space-2)" }}>
+                {g.items.map((item) => (
+                  <Tag key={item}>{item}</Tag>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-8)", width: "100%" }}>

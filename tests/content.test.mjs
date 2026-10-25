@@ -43,3 +43,13 @@ test("page copy has the shape the pages render", async () => {
   assert.ok(ABOUT.intro.paragraphs.length > 0 && ABOUT.intro.paragraphs.every((p) => typeof p === "string" && p));
   for (const key of ["home", "work", "about", "contact"]) assert.ok(SITE_META[key], key);
 });
+
+test("skills are labelled groups of non-empty items, with a heading", async () => {
+  const { ABOUT, SKILLS } = await import("../src/data/content.js");
+  assert.ok(ABOUT.skills.index && ABOUT.skills.title);
+  assert.ok(SKILLS.length > 0);
+  for (const g of SKILLS) {
+    assert.ok(g.group, JSON.stringify(g));
+    assert.ok(g.items.length > 0 && g.items.every((i) => typeof i === "string" && i.trim()), g.group);
+  }
+});
