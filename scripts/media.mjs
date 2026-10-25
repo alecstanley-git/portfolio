@@ -31,7 +31,7 @@ import { PROJECTS, RETIRED_IDS } from "../src/data/content.js";
 import MEDIA from "../src/data/media-manifest.js";
 import COVERS from "../src/data/cover-manifest.js";
 import { nextProjectId } from "../src/lib/projects.js";
-import { classify, planOutputs, safeName, serialiseManifest } from "./lib/media-rules.mjs";
+import { classify, planOutputs, safeName, selectFiles, serialiseManifest } from "./lib/media-rules.mjs";
 
 const run = promisify(execFile);
 
@@ -254,16 +254,17 @@ async function add(args) {
   checkSlug(slug);
   if (!dir || !(await exists(dir))) die(`No such folder: ${dir}`);
 
-  const files = listed.length
-    ? listed
-    : (await walk(dir)).filter((f) => f !== flags.thumbnail && ["image", "pdf"].includes(classify(f)));
+  const hasCover = Boolean(COVERS[slug]);
+  const { files, error } = selectFiles({ listed, found: await walk(dir), thumbnail: flags.thumbnail, hasCover });
+  if (error) die(error);
 
   for (const f of [...files, flags.thumbnail].filter(Boolean)) {
     if (!(await exists(path.join(dir, f)))) die(`Not in ${dir}: ${f}`);
   }
 
   // An existing project already has its card thumbnail; adding a figure later needn't resend it.
-  const { outputs, errors } = planOutputs(files, { thumbnail: flags.thumbnail, hasCover: Boolean(COVERS[slug]) });
+  const existing = Object.fromEntries(Object.entries(MEDIA[slug] ?? {}).map(([key, m]) => [key, m.path]));
+  const { outputs, errors } = planOutputs(files, { thumbnail: flags.thumbnail, hasCover, existing });
   if (errors.length) die(`Nothing written:\n  ${errors.join("\n  ")}`);
 
   const outDir = path.join(PUBLIC, "media", slug);

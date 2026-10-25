@@ -4,10 +4,13 @@
  *
  * Returns tokens rather than markup so the React side builds elements and
  * nothing from content is ever injected as HTML. Anything that does not form
- * a complete mark stays literal, so "5 * 3" and "my_var_name" survive.
+ * a complete mark stays literal, so "5 * 3", "2*pi*r", "my_var_name" and bare
+ * URLs survive. Marks never open or close against a letter or digit.
  */
 
-const SAFE_HREF = /^(https?:|mailto:|\/)/;
+// Site paths start with one slash; "//host" would be another site.
+const SAFE_HREF = /^(https?:|mailto:|\/(?!\/))/;
+const BARE_URL = /^https?:\/\/\S+/;
 const isSpace = (c) => c === undefined || /\s/.test(c);
 const isWord = (c) => c !== undefined && /\w/.test(c);
 
@@ -31,11 +34,9 @@ function readLink(s, i) {
 /** Emphasis delimited by `mark` starting at i, or null if it doesn't close. */
 function readEmphasis(s, i, mark, type) {
   const start = i + mark.length;
-  if (isSpace(s[start])) return null;
-  if (mark === "_" && isWord(s[i - 1])) return null;
+  if (isSpace(s[start]) || isWord(s[i - 1])) return null;
   for (let j = s.indexOf(mark, start + 1); j >= 0; j = s.indexOf(mark, j + 1)) {
-    if (isSpace(s[j - 1])) continue;
-    if (mark === "_" && isWord(s[j + 1])) continue;
+    if (isSpace(s[j - 1]) || isWord(s[j + mark.length])) continue;
     if (mark === "*" && s[j + 1] === "*") continue;
     return { token: { type, text: s.slice(start, j) }, end: j + mark.length };
   }
@@ -54,6 +55,13 @@ export function parseInline(input) {
   let i = 0;
   while (i < s.length) {
     const c = s[i];
+    // A pasted URL is shown as written, never mined for emphasis marks.
+    const url = (c === "h" && !isWord(s[i - 1]) && BARE_URL.exec(s.slice(i))?.[0]) || null;
+    if (url) {
+      push({ type: "text", text: url });
+      i += url.length;
+      continue;
+    }
     const hit =
       c === "["
         ? readLink(s, i)

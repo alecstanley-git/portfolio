@@ -85,7 +85,7 @@ async function walk(dir) {
     }
   }
 }
-await walk(path.join(PUBLIC, "media")).catch(() => fail.push("public/media is missing — run npm run import-assets"));
+await walk(path.join(PUBLIC, "media")).catch(() => fail.push("public/media is missing"));
 
 if (BASE) {
   for (const rel of paths) {

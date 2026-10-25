@@ -80,3 +80,11 @@ test("inlineAttachmentFiles lists files placed in the body", async () => {
   assert.deepEqual([...inlineAttachmentFiles(body)], ["appendix.pdf"]);
   assert.deepEqual([...inlineAttachmentFiles(undefined)], []);
 });
+
+test("isRetiredIn matches IDs by slug, case-insensitively", async () => {
+  const { isRetiredIn } = await import("../src/lib/projects.js");
+  assert.equal(isRetiredIn("p-005", ["P-005"]), true);
+  assert.equal(isRetiredIn("P-005", ["P-005"]), true);
+  assert.equal(isRetiredIn("p-006", ["P-005"]), false);
+  assert.equal(isRetiredIn(undefined, ["P-005"]), false);
+});

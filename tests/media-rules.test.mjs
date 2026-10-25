@@ -70,3 +70,33 @@ test("planOutputs: no thumbnail needed when the project already has a cover", ()
   assert.deepEqual(errors, []);
   assert.deepEqual(outputs, [{ src: "extra.png", out: "extra.webp", kind: "image", lossless: true }]);
 });
+
+test("planOutputs: refuses to overwrite a file another source already owns", () => {
+  const existing = { "orbit_energy.png": "media/p-013/orbit-energy.webp" };
+  const { errors } = planOutputs(["Orbit Energy.jpg"], { hasCover: true, existing });
+  assert.equal(errors.length, 1);
+  assert.match(errors[0], /orbit-energy\.webp/);
+});
+
+test("planOutputs: re-adding the same source name replaces it", () => {
+  const existing = { "orbit_energy.png": "media/p-013/orbit-energy.webp" };
+  assert.deepEqual(planOutputs(["orbit_energy.png"], { hasCover: true, existing }).errors, []);
+});
+
+test("planOutputs: a figure can never become cover.webp", () => {
+  assert.match(planOutputs(["cover.png"], { hasCover: true }).errors.join(" "), /cover\.webp/);
+});
+
+test("selectFiles: new project defaults to every image and PDF except the thumbnail", async () => {
+  const { selectFiles } = await import("../scripts/lib/media-rules.mjs");
+  const found = ["t.jpg", "a.png", "r.pdf", "notes.md", "clip.mp4"];
+  assert.deepEqual(selectFiles({ listed: [], found, thumbnail: "t.jpg", hasCover: false }), { files: ["a.png", "r.pdf"] });
+});
+
+test("selectFiles: an existing project never sweeps the folder", async () => {
+  const { selectFiles } = await import("../scripts/lib/media-rules.mjs");
+  const found = ["new.jpg", "a.png"];
+  assert.deepEqual(selectFiles({ listed: [], found, thumbnail: "new.jpg", hasCover: true }), { files: [] });
+  assert.match(selectFiles({ listed: [], found, hasCover: true }).error, /list/i);
+  assert.deepEqual(selectFiles({ listed: ["a.png"], found, hasCover: true }), { files: ["a.png"] });
+});

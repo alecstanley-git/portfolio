@@ -61,6 +61,12 @@ export function validateProjects(projects, retiredIds = []) {
   return problems;
 }
 
+/** Whether a URL slug ("p-005") names a retired project ID ("P-005"). */
+export function isRetiredIn(slug, retiredIds) {
+  const s = String(slug || "").toLowerCase();
+  return retiredIds.some((id) => id.toLowerCase() === s);
+}
+
 /** Attachments a project's body places inline, so the bottom list can skip them. */
 export function inlineAttachmentFiles(body = []) {
   return new Set((body || []).filter((b) => b && typeof b === "object" && b.attachment).map((b) => b.attachment));

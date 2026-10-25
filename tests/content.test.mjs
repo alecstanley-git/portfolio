@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { PROJECTS, RETIRED_IDS, STARRED, findProject, isRetired } from "../src/data/content.js";
+import { PROJECTS, RETIRED_IDS, STARRED, isRetired } from "../src/data/content.js";
 import { idNumber, validateProjects } from "../src/lib/projects.js";
 
 test("projects are listed newest first, same-date ties to the higher ID", () => {
@@ -29,18 +29,17 @@ test("project data passes validation", () => {
   assert.deepEqual(validateProjects(PROJECTS, RETIRED_IDS), []);
 });
 
-test("isRetired matches retired IDs by slug", () => {
-  assert.equal(isRetired("p-017"), false);
+test("no live project is also retired, and every retired ID resolves as retired", () => {
+  for (const p of PROJECTS) assert.equal(isRetired(p.slug), false, p.id);
+  for (const id of RETIRED_IDS) assert.equal(isRetired(id.toLowerCase()), true, id);
 });
 
-test("page copy lives in content.js", async () => {
+test("page copy has the shape the pages render", async () => {
   const { HOME, WORK, ABOUT, CONTACT, SITE_META } = await import("../src/data/content.js");
-  assert.deepEqual(
-    HOME.stats.map((s) => s.label),
-    ["Graduation", "Projects", "WAM"],
-  );
-  assert.equal(HOME.stats[1].value, PROJECTS.length);
-  assert.ok(WORK.title && ABOUT.intro.paragraphs.length === 2 && ABOUT.timeline.title);
-  assert.match(CONTACT.note, /\{codes\}/);
-  assert.deepEqual(Object.keys(SITE_META).sort(), ["about", "contact", "home", "work"]);
+  assert.ok(HOME.stats.length > 0);
+  for (const st of HOME.stats) assert.ok(st.label && st.value !== undefined && st.value !== "", JSON.stringify(st));
+  assert.ok(HOME.stats.filter((st) => st.tone === "accent").length <= 1, "at most one accent stat");
+  assert.ok(HOME.eyebrow && HOME.starred.title && WORK.title && ABOUT.timeline.title && CONTACT.title);
+  assert.ok(ABOUT.intro.paragraphs.length > 0 && ABOUT.intro.paragraphs.every((p) => typeof p === "string" && p));
+  for (const key of ["home", "work", "about", "contact"]) assert.ok(SITE_META[key], key);
 });

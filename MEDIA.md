@@ -23,9 +23,11 @@ npm run media -- next-id                                     # the next unused p
 npm run check-media                                          # assert everything resolves
 ```
 
-`add` checks the whole set before writing anything. It refuses a missing
-thumbnail, a video, an unrecognised file type, or two files that would end up
-with the same name. In `content.js`, `file:` is the source file name exactly as
+`add` checks names and types for the whole set before writing anything. It
+refuses a missing thumbnail, a video, an unrecognised file type, two files that
+would end up with the same name, or a file that would overwrite one the project
+already has from a different source. On an existing project it only takes the
+files you list (or `--thumbnail` alone to replace just the card image). In `content.js`, `file:` is the source file name exactly as
 it was handed over. `add` prints the keys to use.
 
 ## Conversion rules

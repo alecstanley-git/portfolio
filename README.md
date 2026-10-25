@@ -20,14 +20,14 @@ npm run media -- …     # convert a project's files onto the site — see MEDIA
 ```
 
 Node 20 or newer. `npm run media` additionally needs `ghostscript`, `webp`,
-`poppler` and `ffmpeg` (`brew install ghostscript webp poppler ffmpeg`);
-nothing else does.
+`poppler` and `ffmpeg` (`brew install ghostscript webp poppler ffmpeg`), plus
+macOS's built-in `sips`, `zip` and `zipinfo`; nothing else does.
 
 ## Routes
 
 | Path | Page |
 | --- | --- |
-| `/` | Hero, stat rail, four featured projects, approach panel |
+| `/` | Hero, stat rail, availability, starred projects |
 | `/work` | Filterable index of every project, newest first (`?discipline=Aerospace` is linkable) |
 | `/work/:id` | One project: write-up, result, limitation, figures, video, reports. A retired ID shows a "retired" notice |
 | `/about` | Bio, education and work timeline, three skill groups |

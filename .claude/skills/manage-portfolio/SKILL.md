@@ -69,7 +69,9 @@ pixels). Everything else is a question for Alec.
 
    **Body is required.** If the folder has none, ask Alec for it.
 5. **Media.** `npm run media -- add p-0NN "<dir>" --thumbnail <file> [files…]`
-   (default: every image and PDF). For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`.
+   (default: every image and PDF). For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`,
+   then show Alec the entry list it prints — check nothing private (`.env`,
+   keys, personal data) is inside before it goes online.
    It refuses videos, unknown types and name collisions. Fix the cause, never
    bypass it.
 6. **Entry.** Add a `project({...})` to `ENTRIES` in `content.js`, placed by
@@ -108,8 +110,11 @@ card automatically. Preview the home page, then publish.
 ## Edit anything else
 
 Find the field in `content-map.md`, change it, show before/after, publish on
-go. Media changes use `media add` (add or replace one file) or
-`media remove p-0NN "<manifest key>"`. When the degree year, title or
+go. Media changes on an existing project always name their files:
+`media add p-0NN "<dir>" <file>` adds a figure or report (re-adding the same
+source name replaces it); `media add p-0NN "<dir>" --thumbnail <file>` with no
+other files replaces only the card thumbnail; `media remove p-0NN "<manifest key>"`
+removes one. `add` refuses to overwrite a file another source owns. When the degree year, title or
 availability changes, also check `SITE_META`, `PROFILE.intro`, `HOME.stats` and
 the static description in `index.html` for stale wording (e.g. "fourth-year").
 

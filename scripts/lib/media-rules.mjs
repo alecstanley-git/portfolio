@@ -34,7 +34,7 @@ export function classify(file) {
  * Images become WebP — lossless for PNG (plots and line art keep one-pixel
  * lines sharp), lossy for photos. The thumbnail always becomes `cover.webp`.
  */
-export function planOutputs(files, { thumbnail, hasCover = false } = {}) {
+export function planOutputs(files, { thumbnail, hasCover = false, existing = {} } = {}) {
   const outputs = [];
   const errors = [];
   const all = thumbnail && !files.includes(thumbnail) ? [...files, thumbnail] : files;
@@ -48,7 +48,9 @@ export function planOutputs(files, { thumbnail, hasCover = false } = {}) {
       continue;
     }
     const kind = classify(src);
-    if (kind === "image") {
+    if (kind === "image" && safeName(src, ".webp") === "cover.webp") {
+      errors.push(`${src} would become cover.webp, which is reserved for the thumbnail. Rename it.`);
+    } else if (kind === "image") {
       outputs.push({ src, out: safeName(src, ".webp"), kind, lossless: path.extname(src).toLowerCase() === ".png" });
     } else if (kind === "pdf" || kind === "archive") {
       outputs.push({ src, out: safeName(src), kind });
@@ -67,7 +69,28 @@ export function planOutputs(files, { thumbnail, hasCover = false } = {}) {
     if (srcs.length > 1) errors.push(`${srcs.join(" and ")} would all become ${out}. Rename one.`);
   }
 
+  // Files the project already has: a different source must not overwrite one.
+  // Re-adding the same source name is a deliberate replace and is allowed.
+  for (const o of outputs) {
+    if (o.kind === "thumbnail") continue;
+    const owner = Object.keys(existing).find((key) => path.basename(existing[key]) === o.out && key !== path.basename(o.src));
+    if (owner) errors.push(`${o.src} would overwrite ${o.out}, which already belongs to ${owner}. Rename it, or remove ${owner} first.`);
+  }
+
   return { outputs, errors };
+}
+
+/**
+ * Which files `media add` should process. A new project defaults to every image
+ * and PDF in the folder; an existing one only ever takes what is listed (or
+ * just the new thumbnail), so a stray folder can't be swept onto the site.
+ */
+export function selectFiles({ listed, found, thumbnail, hasCover }) {
+  if (listed.length) return { files: listed };
+  if (hasCover) {
+    return thumbnail ? { files: [] } : { error: "This project already exists: list the files to add (or pass --thumbnail to replace only the thumbnail)." };
+  }
+  return { files: found.filter((f) => f !== thumbnail && ["image", "pdf"].includes(classify(f))) };
 }
 
 /** The text of a generated manifest module. */

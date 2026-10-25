@@ -48,3 +48,25 @@ test("only http(s), mailto and site-relative links", () => {
   assert.deepEqual(parseInline("[me](mailto:a@b.com)"), [{ type: "link", text: "me", href: "mailto:a@b.com" }]);
   assert.deepEqual(parseInline("[p](/work/p-013)"), [{ type: "link", text: "p", href: "/work/p-013" }]);
 });
+
+test("asterisks inside words and numbers stay literal", () => {
+  for (const s of ["5*3 and 2*4", "2*x + 3*y", "rate*time*", "2**3 is 8", "2*pi*r"]) {
+    assert.deepEqual(parseInline(s), [text(s)], s);
+  }
+});
+
+test("bare URLs stay literal", () => {
+  for (const s of ["see https://example.com/_draft_/page now", "https://x.com/*star*"]) {
+    assert.deepEqual(parseInline(s), [text(s)], s);
+  }
+});
+
+test("protocol-relative links are refused", () => {
+  assert.deepEqual(parseInline("[t](//evil.com)"), [text("[t](//evil.com)")]);
+});
+
+test("emphasis still works next to punctuation", () => {
+  assert.deepEqual(parseInline("(*x*), **y**."), [
+    text("("), { type: "em", text: "x" }, text("), "), { type: "strong", text: "y" }, text("."),
+  ]);
+});

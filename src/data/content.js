@@ -18,7 +18,7 @@
  * `src` / `href`. Videos are YouTube links only. See MEDIA.md.
  */
 import { asset } from "../lib/asset.js";
-import { formatDate, sortProjects } from "../lib/projects.js";
+import { formatDate, isRetiredIn, sortProjects } from "../lib/projects.js";
 import MEDIA from "./media-manifest.js";
 import COVERS from "./cover-manifest.js";
 
@@ -372,7 +372,7 @@ export function cardProps(p) {
 }
 
 export function isRetired(slug) {
-  return RETIRED_IDS.some((id) => id.toLowerCase() === String(slug || "").toLowerCase());
+  return isRetiredIn(slug, RETIRED_IDS);
 }
 
 /* --- Page copy -------------------------------------------------------------
