@@ -21,7 +21,7 @@ test("starred lists exactly the starred projects, in list order", () => {
 test("display date and year are derived from the ISO date", () => {
   for (const p of PROJECTS) {
     assert.equal(p.year, p.date.slice(0, 4), p.id);
-    assert.match(p.displayDate, /^[A-Z][a-z]+ \d{1,2}, \d{4}$/, p.id);
+    assert.match(p.displayDate, /^\d{1,2} [A-Z][a-z]+ \d{4}$/, p.id);
   }
 });
 

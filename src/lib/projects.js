@@ -9,12 +9,12 @@ const MONTHS = [
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const PROJECT_ID = /^P-\d{3}$/;
 
-/** "2026-06-07" -> "June 7, 2026". Parsed from the string itself, so the
- *  viewer's timezone can never move a date by a day. */
+/** "2026-06-07" -> "7 June 2026" (Australian order). Parsed from the string
+ *  itself, so the viewer's timezone can never move a date by a day. */
 export function formatDate(iso) {
   const m = ISO_DATE.exec(iso);
   if (!m) return String(iso);
-  return `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}`;
+  return `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${m[1]}`;
 }
 
 export function idNumber(id) {

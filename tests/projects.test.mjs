@@ -13,12 +13,12 @@ import {
   validateProjects,
 } from "../src/lib/projects.js";
 
-test("formatDate gives the long form", () => {
-  assert.equal(formatDate("2026-06-07"), "June 7, 2026");
+test("formatDate gives the Australian long form", () => {
+  assert.equal(formatDate("2026-06-07"), "7 June 2026");
 });
 
 test("formatDate does not shift by timezone", () => {
-  assert.equal(formatDate("2025-10-30"), "October 30, 2025");
+  assert.equal(formatDate("2025-10-30"), "30 October 2025");
 });
 
 test("sortProjects: newest first, same-date ties to the higher ID", () => {
