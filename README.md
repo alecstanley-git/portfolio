@@ -116,9 +116,20 @@ and it builds and deploys. In the repo settings, set Pages → Build and
 deployment → Source to **GitHub Actions**.
 
 The workflow resolves the base path itself: `/` for a `<user>.github.io` repo,
-`/<repo>/` for anything else. It also copies `index.html` to `404.html`, which is
-what makes deep links like `/work/p-013` resolve — Pages serves static files and
-would otherwise 404 before the router ever loads.
+`/<repo>/` for anything else.
+
+`npm run build` runs `vite build`, then `scripts/prerender.mjs`. That writes a
+real HTML file for every page (`/work/`, `/about/`, `/contact/`,
+`/work/p-013/` …). Each is a copy of the built `index.html` with that page's own
+`<title>`, description, canonical URL and link-preview tags, using the
+project's `og.jpg` (a 1200×630 JPEG cropped from its thumbnail). It also writes
+`sitemap.xml` and `robots.txt`.
+
+So crawlers and LinkedIn/Slack previews see the right page before any
+JavaScript runs, and Pages answers project URLs with 200. The workflow still
+copies `index.html` to `404.html` as a fallback for anything else, such as a
+retired project's URL. Prerendering assumes the site is served from the domain
+root in `public/CNAME`.
 
 For any other host, `npm run build` and serve `dist/`. Two requirements:
 
@@ -129,5 +140,6 @@ For any other host, `npm run build` and serve `dist/`. Two requirements:
 ## Stack
 
 React 18, React Router 6, Vite 5. No CSS framework, no component library, no
-analytics, no trackers. The only third-party runtime dependency is `lucide-react`
+trackers. Visitor counts, if switched on, come from Cloudflare Web Analytics,
+injected at Cloudflare's edge. It's cookie-free and there's nothing in this repo. The only third-party runtime dependency is `lucide-react`
 for icons; fonts come from Google Fonts at load.

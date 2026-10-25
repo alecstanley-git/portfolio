@@ -60,6 +60,8 @@ files (attachments not placed in the body) → contact card → previous/next.
 | On the page | Source |
 | --- | --- |
 | Section index/title, bio paragraphs | `ABOUT.intro` (`paragraphs` accept `**bold**`, `*italic*`, `[link](url)`) |
+| Skills heading | `ABOUT.skills` |
+| Skill groups and items | `SKILLS` — `{ group, items: [] }`, word for word from the CV's Skills section |
 | Timeline heading | `ABOUT.timeline` |
 | Timeline entries | `TIMELINE` (below) |
 | Meta description | `SITE_META.about` |
@@ -97,7 +99,8 @@ project({
   date: "2026-11-02",          // Alec. ISO. Sorts the list; year and display date derive from it.
   starred: true,               // optional. Alec. Home page.
   grade: "HD",                 // optional. Alec.
-  status: { label: "In progress", tone: "warn" }, // optional; default Complete/ok. tones: ok warn fail idle
+  status: { label: "In progress", tone: "warn" }, // optional; default Complete/ok. tones: ok warn fail idle.
+                               // Cards show the grade if set, else this status unless it is Complete.
   summary: "…",                // Alec, or drafted from his text and approved. ≤ 2 card lines.
   tags: ["python", "CFD"],     // required. Alec or his notes. Tech names as owners write them.
   body: [ … ],                 // required. See markdown-to-body.md.
@@ -109,5 +112,9 @@ project({
 })
 ```
 
-The card thumbnail is not a field. It is `cover-manifest.js`, written by
+Dates display in Australian order ("25 October 2026"); tags are matched
+case-insensitively by the Work page's tag filter (`/work?tag=python`).
+
+The card thumbnail is not a field. It and the link-preview image (`og.jpg`) are
+in `cover-manifest.js`, written by
 `media add --thumbnail`.

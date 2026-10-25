@@ -24,6 +24,7 @@ npm run media -- add p-013 <dir> --thumbnail new.jpg          # replace only an 
 npm run media -- add p-013 <dir> extra.png                    # add to an existing project (keeps its thumbnail)
 npm run media -- zip p-018 <dir> --name "Source code" src    # bundle code as one download
 npm run media -- remove p-018 [file]                         # delete a project's media, or one file
+npm run media -- og p-018                                    # rebuild the link-preview image (or --all)
 npm run media -- next-id                                     # the next unused project ID
 npm run check-media                                          # assert everything resolves
 ```
@@ -39,6 +40,10 @@ it was handed over. `add` prints the keys to use.
 
 - **Thumbnail** → `cover.webp`, WebP q80, at most 900px wide. That's enough for
   a 370px card on a 2× display.
+- **Link preview** → `og.jpg`, a 1200×630 JPEG (q85) centre-cropped from the
+  thumbnail. LinkedIn doesn't reliably show WebP. `add` makes it with the
+  thumbnail; `npm run media -- og <slug>` (or `--all`) rebuilds it from
+  `cover.webp`. check-media requires one per project.
 - **Figures** → WebP, at most 1600px wide. PNG (plots, diagrams, screenshots)
   is encoded **lossless**, so one-pixel axis lines and tick labels stay sharp.
   JPEG and HEIC photos use q82. SVG is rendered by resvg onto white at the

@@ -21,7 +21,7 @@ The design-system kit keeps a mirror at `.claude/skills/alec-stanley-portfolio-d
    ```
    `UNCHANGED` means the site already has this file. Tell Alec and stop.
 
-3. **Read the text diff it prints.** `src/data/content.js` and `src/routes/About.jsx` repeat CV facts (title, institution, education, employment, skills). If the diff changes any of those, list them for Alec and ask whether to update the site copy too. Do not edit site text without asking. Cosmetic or layout-only diffs need no follow-up.
+3. **Read the text diff it prints.** `src/data/content.js` repeats CV facts (`PROFILE`, `ABOUT`, `TIMELINE`, and `SKILLS`, which is the CV's Skills section word for word). If the diff changes any of those, list them for Alec and ask whether to update the site copy too. Do not edit site text without asking. Cosmetic or layout-only diffs need no follow-up.
 
 4. **Commit and push** only the staged CV files (leave other working-tree changes alone):
    ```bash

@@ -90,7 +90,9 @@ is strictly read-only:
    **Body is required.** If none of the named files gives it, ask Alec for it.
 5. **Media.** `npm run media -- add p-0NN "<dir>" --thumbnail <file> <named files…>`.
    Always list the files. It refuses to run without them and never picks up
-   anything on its own. For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`,
+   anything on its own. The thumbnail also produces `og.jpg`, the project's
+   LinkedIn/link-preview image; `npm run build` gives every project page its own
+   preview tags from it. For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`,
    then show Alec the entry list it prints. Hidden files such as `.env` are
    skipped automatically; still check nothing private (keys, personal data) is
    inside before it goes online.
