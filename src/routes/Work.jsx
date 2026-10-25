@@ -1,13 +1,10 @@
 import { useSearchParams } from "react-router-dom";
 import { ProjectCard, SectionHeading, Select, Tag } from "../components/index.js";
-import { DISCIPLINES, PROJECTS, cardProps } from "../data/content.js";
+import { DISCIPLINES, PROJECTS, SITE_META, WORK, cardProps } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function Work() {
-  usePageMeta(
-    "Work",
-    "Every technical project: CFD, orbital mechanics, photometry, thermodynamics, robotics and simulation work from Alec Stanley's engineering and science degrees.",
-  );
+  usePageMeta("Work", SITE_META.work);
 
   /* The filter lives in the URL so a filtered index can be linked to directly. */
   const [params, setParams] = useSearchParams();
@@ -26,9 +23,9 @@ export default function Work() {
     <div className="container">
       <section className="section section--tight section--top">
         <SectionHeading
-          index="01 / Index"
-          title="All technical projects"
-          lede="Coursework, competition builds and independent work, newest first."
+          index={WORK.index}
+          title={WORK.title}
+          lede={WORK.lede}
         />
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "var(--space-4)" }}>

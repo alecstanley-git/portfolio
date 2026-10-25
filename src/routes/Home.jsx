@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button, Callout, ProjectCard, SectionHeading, StatBlock } from "../components/index.js";
-import { PROFILE, PROJECTS, STARRED, STUDY_AREAS, cardProps } from "../data/content.js";
+import { HOME, PROFILE, SITE_META, STARRED, STUDY_AREAS, cardProps } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 /** Discipline chip that swaps its label for "Major"/"Minor" on hover. Both
@@ -36,7 +36,7 @@ function Hero() {
               color: "var(--ignition-500)",
             }}
           >
-            Melbourne, VIC — Monash University
+            {HOME.eyebrow}
           </span>
           <h1 className="hero__title">{PROFILE.name}</h1>
           <p
@@ -75,9 +75,9 @@ function Hero() {
           {/* The rail keeps the full-width rule; the row inside it is what
               carries the equal columns. */}
           <div className="stat-rail__row">
-            <StatBlock value="2027" label="Graduation" />
-            <StatBlock value={PROJECTS.length} label="Projects" tone="accent" />
-            <StatBlock value="77.1" label="WAM" />
+            {HOME.stats.map((s) => (
+              <StatBlock key={s.label} value={s.value} label={s.label} tone={s.tone} />
+            ))}
           </div>
         </div>
       </div>
@@ -86,10 +86,7 @@ function Hero() {
 }
 
 export default function Home() {
-  usePageMeta(
-    null,
-    "Technical portfolio of Alec Stanley — aerospace engineering (Honours) and astrophysics at Monash University. CFD, orbital mechanics, simulation and robotics projects.",
-  );
+  usePageMeta(null, SITE_META.home);
 
   return (
     <>
@@ -101,9 +98,9 @@ export default function Home() {
             {PROFILE.seeking}
           </Callout>
           <SectionHeading
-            index="01 / Selected work"
-            title="Featured projects"
-            lede="Some of my best work, where I learnt the most."
+            index={HOME.starred.index}
+            title={HOME.starred.title}
+            lede={HOME.starred.lede}
           />
           <div className="grid grid--2 grid--cap">
             {STARRED.map((p) => (

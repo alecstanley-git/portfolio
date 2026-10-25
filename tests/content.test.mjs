@@ -33,3 +33,15 @@ test("project data passes validation", () => {
 test("isRetired matches retired IDs by slug", () => {
   assert.equal(isRetired("p-017"), false);
 });
+
+test("page copy lives in content.js", async () => {
+  const { HOME, WORK, ABOUT, CONTACT, SITE_META } = await import("../src/data/content.js");
+  assert.deepEqual(
+    HOME.stats.map((s) => s.label),
+    ["Graduation", "Projects", "WAM"],
+  );
+  assert.equal(HOME.stats[1].value, PROJECTS.length);
+  assert.ok(WORK.title && ABOUT.intro.paragraphs.length === 2 && ABOUT.timeline.title);
+  assert.match(CONTACT.note, /\{codes\}/);
+  assert.deepEqual(Object.keys(SITE_META).sort(), ["about", "contact", "home", "work"]);
+});

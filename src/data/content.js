@@ -375,6 +375,64 @@ export function isRetired(slug) {
   return RETIRED_IDS.some((id) => id.toLowerCase() === String(slug || "").toLowerCase());
 }
 
+/* --- Page copy -------------------------------------------------------------
+   Every visible sentence on Home, Work, About and Contact. Layout labels
+   ("Figures", button text) stay in the components. */
+
+export const HOME = {
+  eyebrow: "Melbourne, VIC — Monash University",
+  /* The stat rail under the hero. `tone: "accent"` takes the ignition colour —
+     keep it to one stat. */
+  stats: [
+    { value: "2027", label: "Graduation" },
+    { value: PROJECTS.length, label: "Projects", tone: "accent" },
+    { value: "77.1", label: "WAM" },
+  ],
+  starred: {
+    index: "01 / Selected work",
+    title: "Featured projects",
+    lede: "Some of my best work, where I learnt the most.",
+  },
+};
+
+export const WORK = {
+  index: "01 / Index",
+  title: "All technical projects",
+  lede: "Coursework, competition builds and independent work, newest first.",
+};
+
+/* Paragraphs accept **bold**, *italic* and [links](https://…). */
+export const ABOUT = {
+  intro: {
+    index: "01 / About",
+    title: "Perth to Melbourne",
+    paragraphs: [
+      "I'm studying a Bachelor of Engineering (Honours) and Bachelor of Science at Monash University, Clayton — specialising in aerospace engineering and astrophysics, with completed minors in physics and mathematics.",
+      "I grew up in Perth, Western Australia and moved east at 18 to study in Melbourne. Alongside my degree I've led a residential community as a Resident Advisor and supervised teams at Coles — both of which taught me to stay composed and communicate clearly under pressure.",
+    ],
+  },
+  timeline: { index: "02 / Education & experience", title: "Study, leadership and work" },
+};
+
+export const CONTACT = {
+  index: "01 / Contact",
+  title: "Let's talk",
+  lede: "Graduate roles, internships, or a question about any project here.",
+  noteTitle: "Email is the fastest way",
+  /* {codes} is filled with the first two starred project IDs, so it can never
+     name a deleted project. */
+  note: "I reply within a couple of days. If you're asking about a specific project, name the code ({codes} and so on) and I'll be happy to discuss the work further and offer more resources.",
+};
+
+/* Each page's meta description (search results, link previews that run JS).
+   The static fallback for scrapers is in index.html — keep the two in step. */
+export const SITE_META = {
+  home: "Technical portfolio of Alec Stanley — aerospace engineering (Honours) and astrophysics at Monash University. CFD, orbital mechanics, simulation and robotics projects.",
+  work: "Every technical project: CFD, orbital mechanics, photometry, thermodynamics, robotics and simulation work from Alec Stanley's engineering and science degrees.",
+  about: "Alec Stanley — fourth-year aerospace engineering and astrophysics student at Monash University. Education, leadership and work history.",
+  contact: "Get in touch with Alec Stanley about graduate roles, internships or any project in this portfolio.",
+};
+
 export const TIMELINE = [
   {
     period: "2023 — NOW",

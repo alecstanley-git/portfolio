@@ -1,12 +1,9 @@
 import { Button, SectionHeading, TimelineEntry } from "../components/index.js";
-import { PROFILE, TIMELINE } from "../data/content.js";
+import { ABOUT, PROFILE, SITE_META, TIMELINE } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function About() {
-  usePageMeta(
-    "About",
-    "Alec Stanley — fourth-year aerospace engineering and astrophysics student at Monash University. Education, leadership and work history.",
-  );
+  usePageMeta("About", SITE_META.about);
 
   return (
     <div
@@ -29,16 +26,12 @@ export default function About() {
           maxWidth: "var(--container-narrow)",
         }}
       >
-        <SectionHeading index="01 / About" title="Perth to Melbourne" />
-        <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "58ch" }}>
-          I'm studying a Bachelor of Engineering (Honours) and Bachelor of Science at Monash University, Clayton —
-          specialising in aerospace engineering and astrophysics, with completed minors in physics and mathematics.
-        </p>
-        <p style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "58ch" }}>
-          I grew up in Perth, Western Australia and moved east at 18 to study in Melbourne. Alongside my degree I've led
-          a residential community as a Resident Advisor and supervised teams at Coles — both of which taught me to stay
-          composed and communicate clearly under pressure.
-        </p>
+        <SectionHeading index={ABOUT.intro.index} title={ABOUT.intro.title} />
+        {ABOUT.intro.paragraphs.map((para, i) => (
+          <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "58ch" }}>
+            {para}
+          </p>
+        ))}
         <Button
           as="a"
           href={PROFILE.cvUrl}
@@ -52,7 +45,7 @@ export default function About() {
       </section>
 
       <section style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-8)", width: "100%" }}>
-        <SectionHeading index="02 / Education & experience" title="Study, leadership and work" />
+        <SectionHeading index={ABOUT.timeline.index} title={ABOUT.timeline.title} />
         <div style={{ width: "100%", maxWidth: "var(--container-narrow)" }}>
           {TIMELINE.map((t) => (
             <TimelineEntry key={t.title} {...t} />

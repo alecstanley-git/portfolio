@@ -1,5 +1,6 @@
 import { Button, Card, Icon, SectionHeading } from "../components/index.js";
-import { PROFILE } from "../data/content.js";
+import { CONTACT, PROFILE, PROJECTS, SITE_META, STARRED } from "../data/content.js";
+import { exampleCodes, handleFromUrl } from "../lib/projects.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 import { useCopyEmail } from "../lib/useCopyEmail.js";
 
@@ -37,24 +38,21 @@ function Fact({ label, value, href, external, onCopy, copied }) {
 export default function Contact() {
   const { copy, copied } = useCopyEmail();
 
-  usePageMeta(
-    "Contact",
-    "Get in touch with Alec Stanley about graduate roles, internships or any project in this portfolio.",
-  );
+  usePageMeta("Contact", SITE_META.contact);
 
   return (
     <div className="container container--narrow">
       <section className="section section--top">
         <SectionHeading
-          index="01 / Contact"
-          title="Let's talk"
-          lede="Graduate roles, internships, or a question about any project here."
+          index={CONTACT.index}
+          title={CONTACT.title}
+          lede={CONTACT.lede}
         />
 
         <div className="facts">
           <Fact label="Email" value={PROFILE.email} onCopy={copy} copied={copied} />
-          <Fact label="LinkedIn" value="alec-stanley" href={PROFILE.linkedin} external />
-          <Fact label="GitHub" value="alecstanley-git" href={PROFILE.github} external />
+          <Fact label="LinkedIn" value={handleFromUrl(PROFILE.linkedin)} href={PROFILE.linkedin} external />
+          <Fact label="GitHub" value={handleFromUrl(PROFILE.github)} href={PROFILE.github} external />
           <Fact label="Based in" value={`${PROFILE.location} · ${PROFILE.institution}`} />
         </div>
 
@@ -68,10 +66,9 @@ export default function Contact() {
               gap: "var(--space-4)",
             }}
           >
-            <div style={{ font: "var(--type-h2)", color: "var(--text-primary)" }}>Email is the fastest way</div>
+            <div style={{ font: "var(--type-h2)", color: "var(--text-primary)" }}>{CONTACT.noteTitle}</div>
             <p style={{ font: "var(--type-body-sm)", color: "var(--text-muted)", maxWidth: "48ch" }}>
-              I reply within a couple of days. If you're asking about a specific project, name the code (P-013, P-011
-              and so on) and I'll be happy to discuss the work further and offer more resources.
+              {CONTACT.note.replace("{codes}", exampleCodes(STARRED, PROJECTS))}
             </p>
             <div className="cluster cluster--actions">
               {/* Label stays fixed so the confirmation state does not reflow
