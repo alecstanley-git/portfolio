@@ -6,7 +6,7 @@
   "description": "Technical portfolio of Alec Stanley — aerospace engineering and astrophysics, Monash University.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "test": "node --test tests/",
     "check-media": "node scripts/check-media.mjs",

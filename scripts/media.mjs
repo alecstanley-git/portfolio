@@ -23,6 +23,9 @@
  *             rendered by resvg to a white-backed PNG at full width first.
  * PDFs      : Ghostscript downsample to 300 dpi, kept only if smaller with the
  *             same page count; encrypted PDFs are copied untouched.
+ * Preview   : og.jpg, 1200×630 JPEG cropped from the thumbnail, for link
+ *             previews (LinkedIn doesn't reliably show WebP). Made by `add`
+ *             with a thumbnail; `og <slug> | --all` rebuilds from cover.webp.
  * Videos    : refused. They go on YouTube.
  */
 import { execFile } from "node:child_process";
@@ -39,6 +42,7 @@ import MEDIA from "../src/data/media-manifest.js";
 import COVERS from "../src/data/cover-manifest.js";
 import { nextProjectId } from "../src/lib/projects.js";
 import { classify, planOutputs, safeName, selectFiles, serialiseManifest } from "./lib/media-rules.mjs";
+import { OG_SIZE, ogCrop } from "./lib/prerender-rules.mjs";
 
 const run = promisify(execFile);
 
@@ -168,6 +172,31 @@ async function inventory(dir) {
 }
 
 /* --- conversion ----------------------------------------------------------- */
+
+/** A 1200×630 JPEG link-preview image: centred crop to that shape, then scaled. */
+async function makeOg(src, out) {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "media-og-"));
+  try {
+    let input = path.join(tmpDir, "in.png");
+    if (isSvg(src)) await svgToPng(src, input, OG_SIZE.w);
+    else await run("sips", ["-s", "format", "png", src, "--out", input]);
+    const { w, h } = await imageSize(input);
+    const crop = ogCrop(w, h);
+    await run("sips", ["--cropToHeightWidth", String(crop.h), String(crop.w), input]);
+    await run("sips", ["--resampleHeightWidth", String(OG_SIZE.h), String(OG_SIZE.w), input]);
+    await run("sips", ["-s", "format", "jpeg", "-s", "formatOptions", "85", input, "--out", out]);
+    return { w: OG_SIZE.w, h: OG_SIZE.h };
+  } finally {
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  }
+}
+
+async function addOg(slug, src) {
+  const out = path.join(PUBLIC, "media", slug, "og.jpg");
+  const { w, h } = await makeOg(src, out);
+  COVERS[slug] = { ...COVERS[slug], og: { path: path.relative(PUBLIC, out), w, h } };
+  return out;
+}
 
 /** Resize (if wider than maxWidth) and encode to WebP. Returns output size. */
 async function toWebp(src, out, { maxWidth, lossless, quality }) {
@@ -332,7 +361,8 @@ async function add(args) {
       if (o.kind === "thumbnail") {
         const { w, h } = await toWebp(src, out, { maxWidth: THUMB_WIDTH, lossless: false, quality: 80 });
         COVERS[slug] = { path: rel, w, h };
-        extra = `${w}×${h}`;
+        await addOg(slug, src);
+        extra = `${w}×${h}, + og.jpg link preview`;
       } else if (o.kind === "image") {
         const { w, h } = await toWebp(src, out, { maxWidth: MAX_WIDTH, lossless: o.lossless, quality: 82 });
         MEDIA[slug][path.basename(o.src)] = { path: rel, w, h };
@@ -393,6 +423,20 @@ async function zip(args) {
   console.log(`\nManifest key for content.js: file: "${key}"`);
 }
 
+/* --- og ------------------------------------------------------------------- */
+
+/** Rebuild link-preview images from the published cover.webp. */
+async function og(target) {
+  const slugs = target === "--all" ? PROJECTS.map((p) => p.slug) : [target];
+  for (const slug of slugs) {
+    checkSlug(slug);
+    if (!COVERS[slug]) die(`${slug} has no thumbnail to make a preview from`);
+    const out = await addOg(slug, path.join(PUBLIC, COVERS[slug].path));
+    console.log(`${COVERS[slug].path} -> ${path.relative(ROOT, out)}`);
+  }
+  await writeManifests();
+}
+
 /* --- remove --------------------------------------------------------------- */
 
 async function remove([slug, file]) {
@@ -422,10 +466,11 @@ const commands = {
   zip: () => zip(args),
   remove: () => remove(args),
   "next-id": async () => console.log(nextProjectId(PROJECTS, RETIRED_IDS)),
+  og: () => og(args[0]),
 };
 
 if (!commands[cmd]) {
-  console.error("Usage: npm run media -- {inventory <dir> | add <slug> <dir> --thumbnail <f> [files…] | zip <slug> <dir> --name <n> <paths…> | remove <slug> [file] | next-id}");
+  console.error("Usage: npm run media -- {inventory <dir> | add <slug> <dir> --thumbnail <f> [files…] | zip <slug> <dir> --name <n> <paths…> | remove <slug> [file] | og <slug>|--all | next-id}");
   process.exit(2);
 }
 commands[cmd]().catch((err) => die(err.stack || err.message));

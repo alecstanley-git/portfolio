@@ -52,6 +52,7 @@ for (const p of PROJECTS) {
   }
   videoSlots += p.videos.filter((v) => !v.youtube).length;
   if (!p.image) fail.push(`${p.id} has no card thumbnail`);
+  if (!COVERS[p.slug]?.og) fail.push(`${p.id} has no link-preview image — run: npm run media -- og ${p.slug}`);
 }
 
 // Every manifest path must exist on disk, be non-empty, and be lowercase —
@@ -59,7 +60,7 @@ for (const p of PROJECTS) {
 // "works locally, 404 in production" bug waiting to happen.
 const paths = [
   ...Object.values(MEDIA).flatMap((files) => Object.values(files).map((m) => m.path)),
-  ...Object.values(COVERS).map((c) => c.path),
+  ...Object.values(COVERS).flatMap((c) => [c.path, c.og?.path].filter(Boolean)),
 ];
 for (const rel of paths) {
   if (rel !== rel.toLowerCase()) fail.push(`not lowercase: ${rel}`);
