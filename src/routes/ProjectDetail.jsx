@@ -7,10 +7,13 @@ import {
   Card,
   MediaFrame,
   PdfEmbed,
+  RichBody,
+  SectionHeading,
   Tag,
   VideoEmbed,
 } from "../components/index.js";
-import { PROJECTS, findProject } from "../data/content.js";
+import { PROJECTS, findProject, isRetired } from "../data/content.js";
+import { inlineAttachmentFiles } from "../lib/projects.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 import { useCopyEmail } from "../lib/useCopyEmail.js";
 
@@ -21,6 +24,47 @@ const sectionLabel = {
   color: "var(--ignition-500)",
   textAlign: "center",
 };
+
+/* Only PDFs get an inline viewer; a zip or other file has nothing to preview. */
+function AttachmentRow({ attachment: a }) {
+  return a.file.toLowerCase().endsWith(".pdf") ? (
+    <PdfEmbed label={a.label} file={a.file} href={a.href} />
+  ) : (
+    <AttachmentLink label={a.label} file={a.file} href={a.href} />
+  );
+}
+
+/** Shown at the URL of a deleted project, so old links explain themselves. */
+function RetiredProject({ slug }) {
+  usePageMeta("Retired project");
+  return (
+    <div className="container container--narrow">
+      <section className="section section--top">
+        <SectionHeading
+          index={`${slug.toUpperCase()} / Retired`}
+          title="This project has been retired"
+          lede="It has been removed from the portfolio."
+        />
+        <div className="cluster cluster--actions">
+          <Button as={Link} to="/work" iconRight="arrow-right">
+            All projects
+          </Button>
+          <Button as={Link} to="/" variant="secondary">
+            Back to home
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default function ProjectDetail() {
+  const { slug } = useParams();
+  const project = findProject(slug);
+  if (project) return <Project project={project} />;
+  if (isRetired(slug)) return <RetiredProject slug={slug} />;
+  return <Navigate to="/work" replace />;
+}
 
 function ProjectPager({ project }) {
   const i = PROJECTS.indexOf(project);
@@ -55,14 +99,17 @@ function ProjectPager({ project }) {
   );
 }
 
-export default function ProjectDetail() {
-  const { slug } = useParams();
-  const project = findProject(slug);
+function Project({ project }) {
   const { copy: copyEmail, copied: emailCopied } = useCopyEmail();
 
-  usePageMeta(project?.title, project?.summary);
+  usePageMeta(project.title, project.summary);
 
-  if (!project) return <Navigate to="/work" replace />;
+  const inline = inlineAttachmentFiles(project.body);
+  const bottomAttachments = project.attachments.filter((a) => !inline.has(a.file));
+  const renderAttachment = (file) => {
+    const a = project.attachments.find((x) => x.file === file);
+    return a ? <AttachmentRow attachment={a} /> : null;
+  };
 
   const [leadVideo, ...restVideos] = project.videos;
   const [leadImage, ...restImages] = project.images;
@@ -150,15 +197,7 @@ export default function ProjectDetail() {
         />
       ) : null}
 
-      {project.body.length ? (
-        <div className="stack">
-          {project.body.map((para) => (
-            <p key={para.slice(0, 40)} style={{ font: "var(--type-body)", color: "var(--text-body)" }}>
-              {para}
-            </p>
-          ))}
-        </div>
-      ) : null}
+      {project.body.length ? <RichBody blocks={project.body} renderAttachment={renderAttachment} /> : null}
 
       {project.result ? (
         <Callout tone="accent" title="Result">
@@ -201,17 +240,12 @@ export default function ProjectDetail() {
         </section>
       ) : null}
 
-      {project.attachments.length ? (
+      {bottomAttachments.length ? (
         <section style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           <h2 style={sectionLabel}>Reports and files</h2>
-          {project.attachments.map((a) =>
-            /* Only PDFs get an inline viewer; the source-code zip has nothing to preview. */
-            a.file.toLowerCase().endsWith(".pdf") ? (
-              <PdfEmbed key={a.file + a.label} label={a.label} file={a.file} href={a.href} />
-            ) : (
-              <AttachmentLink key={a.file + a.label} label={a.label} file={a.file} href={a.href} />
-            ),
-          )}
+          {bottomAttachments.map((a) => (
+            <AttachmentRow key={a.file + a.label} attachment={a} />
+          ))}
         </section>
       ) : null}
 

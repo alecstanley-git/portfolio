@@ -60,3 +60,8 @@ export function validateProjects(projects, retiredIds = []) {
   }
   return problems;
 }
+
+/** Attachments a project's body places inline, so the bottom list can skip them. */
+export function inlineAttachmentFiles(body = []) {
+  return new Set((body || []).filter((b) => b && typeof b === "object" && b.attachment).map((b) => b.attachment));
+}

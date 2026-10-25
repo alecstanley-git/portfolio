@@ -167,6 +167,15 @@ html { scroll-behavior: smooth; }
   gap: var(--space-5);
 }
 
+/* Bullet and numbered lists inside a project write-up. */
+.prose-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-inline-start: var(--space-6);
+}
+.prose-list li::marker { color: var(--text-faint); }
+
 /* --- Discipline chips ---------------------------------------------------- */
 /* Hero chips carrying the degree specialisations. Same metrics as the Tag
    primitive, but the label crossfades to "Major"/"Minor" on hover, which Tag's

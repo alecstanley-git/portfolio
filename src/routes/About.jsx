@@ -1,4 +1,4 @@
-import { Button, SectionHeading, TimelineEntry } from "../components/index.js";
+import { Button, Inline, SectionHeading, TimelineEntry } from "../components/index.js";
 import { ABOUT, PROFILE, SITE_META, TIMELINE } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
@@ -29,7 +29,7 @@ export default function About() {
         <SectionHeading index={ABOUT.intro.index} title={ABOUT.intro.title} />
         {ABOUT.intro.paragraphs.map((para, i) => (
           <p key={i} style={{ font: "var(--type-body)", color: "var(--text-body)", maxWidth: "58ch" }}>
-            {para}
+            <Inline text={para} />
           </p>
         ))}
         <Button

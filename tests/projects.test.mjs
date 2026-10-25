@@ -73,3 +73,10 @@ test("validateProjects flags each problem with the ID", () => {
     assert.match(problems[0], new RegExp(id));
   }
 });
+
+test("inlineAttachmentFiles lists files placed in the body", async () => {
+  const { inlineAttachmentFiles } = await import("../src/lib/projects.js");
+  const body = ["para", { heading: "H" }, { attachment: "appendix.pdf" }, { list: ["a"] }];
+  assert.deepEqual([...inlineAttachmentFiles(body)], ["appendix.pdf"]);
+  assert.deepEqual([...inlineAttachmentFiles(undefined)], []);
+});
