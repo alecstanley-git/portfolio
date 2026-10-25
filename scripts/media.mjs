@@ -10,12 +10,17 @@
  *
  * Output goes to `public/media/<slug>/` and is recorded in
  * `src/data/media-manifest.js` (figures, reports, zips) and
- * `src/data/cover-manifest.js` (the card thumbnail). The source folder is only
- * ever read.
+ * `src/data/cover-manifest.js` (the card thumbnail).
+ *
+ * The source folder is Alec's real working directory and is strictly
+ * read-only: named files are copied into a temporary staging folder and every
+ * conversion runs on those copies. Nothing is ever written, moved, renamed or
+ * deleted inside the source folder, and only files Alec named are touched.
  *
  * Thumbnail : WebP q80, at most 900px wide (a 370px card on a 2x display).
  * Images    : WebP, at most 1600px wide. PNG -> lossless, so one-pixel axis
- *             lines in plots stay sharp; JPEG/HEIC photos -> q82.
+ *             lines in plots stay sharp; JPEG/HEIC photos -> q82. SVG is
+ *             rendered by resvg to a white-backed PNG at full width first.
  * PDFs      : Ghostscript downsample to 300 dpi, kept only if smaller with the
  *             same page count; encrypted PDFs are copied untouched.
  * Videos    : refused. They go on YouTube.
@@ -26,6 +31,8 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+
+import { Resvg } from "@resvg/resvg-js";
 
 import { PROJECTS, RETIRED_IDS } from "../src/data/content.js";
 import MEDIA from "../src/data/media-manifest.js";
@@ -81,11 +88,23 @@ async function walk(dir, rel = "") {
 }
 
 async function imageSize(file) {
+  if (isSvg(file)) {
+    const r = new Resvg(await fs.readFile(file));
+    return { w: Math.round(r.width), h: Math.round(r.height) };
+  }
   const { stdout } = await run("sips", ["-g", "pixelWidth", "-g", "pixelHeight", file]);
   return {
     w: Number(stdout.match(/pixelWidth:\s*(\d+)/)?.[1] ?? 0),
     h: Number(stdout.match(/pixelHeight:\s*(\d+)/)?.[1] ?? 0),
   };
+}
+
+const isSvg = (file) => path.extname(file).toLowerCase() === ".svg";
+
+/** Render an SVG to a PNG `width` pixels wide on white (figures sit on a light card). */
+async function svgToPng(src, out, width) {
+  const r = new Resvg(await fs.readFile(src), { fitTo: { mode: "width", value: width }, background: "white" });
+  await fs.writeFile(out, r.render().asPng());
 }
 
 async function pdfInfo(file) {
@@ -155,14 +174,20 @@ async function toWebp(src, out, { maxWidth, lossless, quality }) {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "media-"));
   try {
     let input = src;
-    let { w, h } = await imageSize(src);
+    // Vectors have no native pixel size, so render straight to the width cap.
+    if (isSvg(src)) {
+      input = path.join(tmpDir, "svg.png");
+      await svgToPng(src, input, maxWidth);
+    }
+    let { w, h } = await imageSize(input);
     // cwebp can't read HEIC, and resizes only from its own decode path, so
     // sips produces an intermediate PNG for both cases.
     if (w > maxWidth || path.extname(src).toLowerCase() === ".heic") {
-      input = path.join(tmpDir, "in.png");
-      const args = ["-s", "format", "png", src, "--out", input];
+      const resized = path.join(tmpDir, "in.png");
+      const args = ["-s", "format", "png", input, "--out", resized];
       if (w > maxWidth) args.unshift("--resampleWidth", String(maxWidth));
       await run("sips", args);
+      input = resized;
       ({ w, h } = await imageSize(input));
     }
     const enc = lossless ? ["-lossless", "-z", "9"] : ["-q", String(quality), "-m", "6", "-sharp_yuv"];
@@ -231,6 +256,29 @@ async function writeManifests() {
   await fs.writeFile(COVER_FILE, serialiseManifest(COVER_HEADER, COVERS));
 }
 
+/**
+ * Copy the named files out of Alec's folder into a fresh temp directory, so
+ * every tool below works on copies. Returns the staging directory; the caller
+ * removes it.
+ */
+async function stage(dir, names) {
+  const staging = await fs.mkdtemp(path.join(os.tmpdir(), "media-stage-"));
+  for (const name of names) {
+    const dest = path.join(staging, name);
+    await fs.mkdir(path.dirname(dest), { recursive: true });
+    await fs.cp(path.join(dir, name), dest, { recursive: true, preserveTimestamps: true });
+  }
+  return staging;
+}
+
+/** Refuse any setup where output could land inside the source folder. */
+function assertOutsideSource(dir) {
+  const src = path.resolve(dir) + path.sep;
+  if ((path.resolve(PUBLIC) + path.sep).startsWith(src) || (ROOT + path.sep).startsWith(src)) {
+    die(`${dir} contains this repo — the source folder must be separate and is never written to.`);
+  }
+}
+
 function checkSlug(slug) {
   if (!/^p-\d{3}$/.test(slug || "")) die(`Slug must look like p-018, got "${slug}"`);
 }
@@ -253,9 +301,10 @@ async function add(args) {
   const [slug, dir, ...listed] = rest;
   checkSlug(slug);
   if (!dir || !(await exists(dir))) die(`No such folder: ${dir}`);
+  assertOutsideSource(dir);
 
   const hasCover = Boolean(COVERS[slug]);
-  const { files, error } = selectFiles({ listed, found: await walk(dir), thumbnail: flags.thumbnail, hasCover });
+  const { files, error } = selectFiles({ listed, thumbnail: flags.thumbnail, hasCover });
   if (error) die(error);
 
   for (const f of [...files, flags.thumbnail].filter(Boolean)) {
@@ -270,33 +319,38 @@ async function add(args) {
   const outDir = path.join(PUBLIC, "media", slug);
   await fs.mkdir(outDir, { recursive: true });
   MEDIA[slug] ??= {};
+  const staging = await stage(dir, outputs.map((o) => o.src));
 
-  for (const o of outputs) {
-    const src = path.join(dir, o.src);
-    const out = path.join(outDir, o.out);
-    const rel = path.relative(PUBLIC, out);
-    const { size: before } = await fs.stat(src);
-    let extra = "";
+  try {
+    for (const o of outputs) {
+      const src = path.join(staging, o.src);
+      const out = path.join(outDir, o.out);
+      const rel = path.relative(PUBLIC, out);
+      const { size: before } = await fs.stat(src);
+      let extra = "";
 
-    if (o.kind === "thumbnail") {
-      const { w, h } = await toWebp(src, out, { maxWidth: THUMB_WIDTH, lossless: false, quality: 80 });
-      COVERS[slug] = { path: rel, w, h };
-      extra = `${w}×${h}`;
-    } else if (o.kind === "image") {
-      const { w, h } = await toWebp(src, out, { maxWidth: MAX_WIDTH, lossless: o.lossless, quality: 82 });
-      MEDIA[slug][path.basename(o.src)] = { path: rel, w, h };
-      extra = `${w}×${h}${o.lossless ? ", lossless" : ""}`;
-    } else if (o.kind === "pdf") {
-      const { pages, note } = await processPdf(src, out);
-      MEDIA[slug][path.basename(o.src)] = { path: rel, pages };
-      extra = `${pages} pages${note ? `, ${note}` : ""}`;
-    } else {
-      await fs.copyFile(src, out);
-      MEDIA[slug][path.basename(o.src)] = { path: rel };
+      if (o.kind === "thumbnail") {
+        const { w, h } = await toWebp(src, out, { maxWidth: THUMB_WIDTH, lossless: false, quality: 80 });
+        COVERS[slug] = { path: rel, w, h };
+        extra = `${w}×${h}`;
+      } else if (o.kind === "image") {
+        const { w, h } = await toWebp(src, out, { maxWidth: MAX_WIDTH, lossless: o.lossless, quality: 82 });
+        MEDIA[slug][path.basename(o.src)] = { path: rel, w, h };
+        extra = `${w}×${h}${o.lossless ? ", lossless" : ""}`;
+      } else if (o.kind === "pdf") {
+        const { pages, note } = await processPdf(src, out);
+        MEDIA[slug][path.basename(o.src)] = { path: rel, pages };
+        extra = `${pages} pages${note ? `, ${note}` : ""}`;
+      } else {
+        await fs.copyFile(src, out);
+        MEDIA[slug][path.basename(o.src)] = { path: rel };
+      }
+
+      const { size: after } = await fs.stat(out);
+      console.log(`${o.src} -> public/${rel}  (${fmt(before)} -> ${fmt(after)}${extra ? `, ${extra}` : ""})`);
     }
-
-    const { size: after } = await fs.stat(out);
-    console.log(`${o.src} -> public/${rel}  (${fmt(before)} -> ${fmt(after)}${extra ? `, ${extra}` : ""})`);
+  } finally {
+    await fs.rm(staging, { recursive: true, force: true });
   }
 
   await writeManifests();
@@ -309,18 +363,26 @@ async function zip(args) {
   const { flags, rest } = parseFlags(args, ["name"]);
   const [slug, dir, ...paths] = rest;
   checkSlug(slug);
+  if (!dir || !(await exists(dir))) die(`No such folder: ${dir}`);
+  assertOutsideSource(dir);
   if (!flags.name) die('Give the download a name: --name "Source code"');
   if (!paths.length) die("List the files or folders to bundle.");
   const key = safeName(`${flags.name}.zip`);
   const outDir = path.join(PUBLIC, "media", slug);
   const out = path.join(outDir, key);
   await fs.mkdir(outDir, { recursive: true });
-  await fs.rm(out, { force: true });
-  await run(
-    "zip",
-    ["-r", "-X", "-q", out, ...paths, "-x", "*.DS_Store", "*__MACOSX*", "*__pycache__*", "*node_modules*", "*.git/*"],
-    { cwd: dir },
-  );
+  for (const p of paths) if (!(await exists(path.join(dir, p)))) die(`Not in ${dir}: ${p}`);
+  const staging = await stage(dir, paths);
+  try {
+    await fs.rm(out, { force: true });
+    await run(
+      "zip",
+      ["-r", "-X", "-q", out, ...paths, "-x", ".*", "*/.*", "*.DS_Store", "*__MACOSX*", "*__pycache__*", "*node_modules*", "*.git/*"],
+      { cwd: staging },
+    );
+  } finally {
+    await fs.rm(staging, { recursive: true, force: true });
+  }
   const { stdout } = await run("zipinfo", ["-1", out]);
   MEDIA[slug] ??= {};
   MEDIA[slug][key] = { path: path.relative(PUBLIC, out) };

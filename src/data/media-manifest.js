@@ -248,5 +248,26 @@ export default {
       "path": "media/p-018/report.pdf",
       "pages": 21
     }
+  },
+  "p-019": {
+    "precision-recall-comparison.svg": {
+      "path": "media/p-019/precision-recall-comparison.webp",
+      "w": 1600,
+      "h": 1181
+    },
+    "training-history.svg": {
+      "path": "media/p-019/training-history.webp",
+      "w": 1600,
+      "h": 516
+    },
+    "study.svg": {
+      "path": "media/p-019/study.webp",
+      "w": 1600,
+      "h": 766
+    },
+    "report.pdf": {
+      "path": "media/p-019/report.pdf",
+      "pages": 14
+    }
   }
 };

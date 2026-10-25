@@ -6,7 +6,7 @@
 import path from "node:path";
 
 const KINDS = {
-  image: [".png", ".jpg", ".jpeg", ".heic", ".webp"],
+  image: [".png", ".jpg", ".jpeg", ".heic", ".webp", ".svg"],
   pdf: [".pdf"],
   video: [".mp4", ".mov", ".m4v", ".webm"],
   text: [".md", ".txt"],
@@ -31,8 +31,8 @@ export function classify(file) {
 
 /**
  * Decide the output for every file, or explain why the set can't be published.
- * Images become WebP — lossless for PNG (plots and line art keep one-pixel
- * lines sharp), lossy for photos. The thumbnail always becomes `cover.webp`.
+ * Images become WebP — lossless for PNG and SVG (plots and line art keep
+ * one-pixel lines sharp), lossy for photos. The thumbnail always becomes `cover.webp`.
  */
 export function planOutputs(files, { thumbnail, hasCover = false, existing = {} } = {}) {
   const outputs = [];
@@ -51,7 +51,7 @@ export function planOutputs(files, { thumbnail, hasCover = false, existing = {} 
     if (kind === "image" && safeName(src, ".webp") === "cover.webp") {
       errors.push(`${src} would become cover.webp, which is reserved for the thumbnail. Rename it.`);
     } else if (kind === "image") {
-      outputs.push({ src, out: safeName(src, ".webp"), kind, lossless: path.extname(src).toLowerCase() === ".png" });
+      outputs.push({ src, out: safeName(src, ".webp"), kind, lossless: [".png", ".svg"].includes(path.extname(src).toLowerCase()) });
     } else if (kind === "pdf" || kind === "archive") {
       outputs.push({ src, out: safeName(src), kind });
     } else if (kind === "video") {
@@ -81,16 +81,15 @@ export function planOutputs(files, { thumbnail, hasCover = false, existing = {} 
 }
 
 /**
- * Which files `media add` should process. A new project defaults to every image
- * and PDF in the folder; an existing one only ever takes what is listed (or
- * just the new thumbnail), so a stray folder can't be swept onto the site.
+ * Which files `media add` should process: only the ones Alec named. The source
+ * folder is his real working directory, so nothing is ever picked up from it
+ * by default. `--thumbnail` alone (on a project that has one) replaces just
+ * the card image.
  */
-export function selectFiles({ listed, found, thumbnail, hasCover }) {
+export function selectFiles({ listed, thumbnail, hasCover }) {
   if (listed.length) return { files: listed };
-  if (hasCover) {
-    return thumbnail ? { files: [] } : { error: "This project already exists: list the files to add (or pass --thumbnail to replace only the thumbnail)." };
-  }
-  return { files: found.filter((f) => f !== thumbnail && ["image", "pdf"].includes(classify(f))) };
+  if (hasCover && thumbnail) return { files: [] };
+  return { error: "List the files to add — only files Alec named go on the site." };
 }
 
 /** The text of a generated manifest module. */

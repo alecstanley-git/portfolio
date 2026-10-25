@@ -78,6 +78,36 @@ export const RETIRED_IDS = [];
 /* Kept in date order here too, for readability; the sort below is what counts. */
 const ENTRIES = [
   project({
+    id: "P-019",
+    title: "Automated Detection of Pork Rasher Packaging Errors and Meat Quality",
+    discipline: "Software",
+    date: "2026-10-25",
+    summary:
+      "A neural network written by hand in NumPy that finds packaging and meat defects in photographs of pork rasher packs, compared against Ultralytics YOLOv8.",
+    tags: ["python", "NumPy", "machine learning", "computer vision", "Ultralytics"],
+    body: [
+      "I built a screening aid for a pork rasher packing line. A fixed camera photographs each sealed pack on the conveyor, and the software flags packs with an open seal, wrinkled film, or loose or twisted meat for a person to check. The data is a public Roboflow dataset of 3,549 labelled photographs.",
+      { heading: "Method" },
+      "Rather than calling a prebuilt library, I wrote a YOLO-style detector by hand in NumPy so that each step maps to MMA3001 unit content. Each photograph is split into a 12 by 9 grid, and a multilayer perceptron with 206,410 parameters predicts whether each cell holds a defect, along with its box and class. It is trained with backpropagation and the Adam optimiser, stops early on held-back frames, and is checked by 103 automated tests.",
+      { heading: "Results" },
+      { list: [
+        "On the 80 test photographs it reaches an average precision of 0.512. It flags 69% of defective packs and passes 92% of clean ones, in under 6 ms per photograph.",
+        "Ultralytics YOLOv8, trained on the same data, scores 0.738 and flags 85% of defective packs. It has 15 times more parameters and trains on a graphics processor.",
+        "Profiling showed that most of the time goes on preparing the inputs, not on the network itself. Switching the block averaging to strided sums cut the time per photograph from 9.5 to 5.9 ms.",
+      ] },
+      "The code and documentation are on [GitHub](https://github.com/alecstanley-git/mma3001-project).",
+    ],
+    result: "Passed 92% of clean packs but flagged only 69% of defective ones, just short of the 70% target.",
+    caveat:
+      "All frames come from one continuous video and were split at random, so the test scores are likely optimistic. There are too few loose-meat and twisted-meat examples to judge those classes.",
+    images: [
+      { file: "precision-recall-comparison.svg", caption: "Precision against recall for both solutions on the test photographs." },
+      { file: "training-history.svg", caption: "Training record of the hand-written detector. Left: the training loss falls steadily. Right: average precision on the held-back training frames levels off, and the weights from the best pass are kept." },
+      { file: "study.svg", caption: "Validation average precision for every design-choice variation, including each random seed." },
+    ],
+    attachments: [{ label: "Full report", file: "report.pdf" }],
+  }),
+  project({
     id: "P-018",
     title: "PW4000 Turbofan Cycle Analysis",
     discipline: "Aerospace",

@@ -12,10 +12,15 @@ Both are written by `scripts/media.mjs`. Don't edit them by hand.
 
 ## Adding a project's files
 
+`<dir>` is the original folder the work lives in, and it is **read-only**. The
+named files are copied to a temporary staging folder and converted there;
+nothing inside `<dir>` is ever written, moved or deleted, and nothing is picked
+up unless it is named.
+
 ```sh
 npm run media -- inventory <dir>                              # what's in the folder
-npm run media -- add p-018 <dir> --thumbnail cover.jpg       # every image + PDF in <dir>
-npm run media -- add p-018 <dir> --thumbnail cover.jpg a.png report.pdf   # or just these
+npm run media -- add p-018 <dir> --thumbnail cover.jpg a.png report.pdf   # always name the files
+npm run media -- add p-013 <dir> --thumbnail new.jpg          # replace only an existing project's thumbnail
 npm run media -- add p-013 <dir> extra.png                    # add to an existing project (keeps its thumbnail)
 npm run media -- zip p-018 <dir> --name "Source code" src    # bundle code as one download
 npm run media -- remove p-018 [file]                         # delete a project's media, or one file
@@ -26,8 +31,8 @@ npm run check-media                                          # assert everything
 `add` checks names and types for the whole set before writing anything. It
 refuses a missing thumbnail, a video, an unrecognised file type, two files that
 would end up with the same name, or a file that would overwrite one the project
-already has from a different source. On an existing project it only takes the
-files you list (or `--thumbnail` alone to replace just the card image). In `content.js`, `file:` is the source file name exactly as
+already has from a different source. It only ever takes the files you list
+(or `--thumbnail` alone to replace an existing project's card image). In `content.js`, `file:` is the source file name exactly as
 it was handed over. `add` prints the keys to use.
 
 ## Conversion rules
@@ -36,7 +41,8 @@ it was handed over. `add` prints the keys to use.
   a 370px card on a 2× display.
 - **Figures** → WebP, at most 1600px wide. PNG (plots, diagrams, screenshots)
   is encoded **lossless**, so one-pixel axis lines and tick labels stay sharp.
-  JPEG and HEIC photos use q82.
+  JPEG and HEIC photos use q82. SVG is rendered by resvg onto white at the
+  full 1600px width, then encoded lossless like PNG.
 - **PDFs** → Ghostscript downsamples embedded images to 300 dpi, print grade.
   The result is kept only if the page count is unchanged *and* it is genuinely
   smaller; otherwise the original is copied. 150 dpi was tried once and
@@ -44,8 +50,8 @@ it was handed over. `add` prints the keys to use.
   serves this copy.
 - **Encrypted PDFs** (e.g. `CSWA_Certificate.pdf`) are copied byte-for-byte.
   Re-writing them would strip their permission flags.
-- **Zips** are copied as-is. `media zip` builds one from a folder and skips
-  `.DS_Store`, `__MACOSX`, `__pycache__`, `node_modules` and `.git`.
+- **Zips** are copied as-is. `media zip` builds one from a folder and skips hidden
+  files (`.env`, `.git`, …), `.DS_Store`, `__MACOSX`, `__pycache__`, `node_modules` and `.git`.
 - **Videos are never served from the site.** Upload to YouTube and set
   `youtube` on the `videos[]` entry. Add `aspect: "4 / 3"` for 4:3 footage so it
   isn't pillarboxed; `inventory` reports each video's aspect.

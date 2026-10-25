@@ -46,6 +46,12 @@ test("planOutputs: JPEG figures are lossy, PDFs keep their extension", () => {
   assert.deepEqual(outputs.find((o) => o.src === "Final Report.pdf"), { src: "Final Report.pdf", out: "final-report.pdf", kind: "pdf" });
 });
 
+test("planOutputs: SVG figures are images, rendered to lossless WebP", () => {
+  const { outputs, errors } = planOutputs(["Training History.svg", "t.png"], { thumbnail: "t.png" });
+  assert.deepEqual(errors, []);
+  assert.deepEqual(outputs.find((o) => o.src === "Training History.svg"), { src: "Training History.svg", out: "training-history.webp", kind: "image", lossless: true });
+});
+
 test("planOutputs: refuses without a thumbnail", () => {
   assert.match(planOutputs(["a.png"], {}).errors.join(" "), /thumbnail/i);
 });
@@ -87,10 +93,11 @@ test("planOutputs: a figure can never become cover.webp", () => {
   assert.match(planOutputs(["cover.png"], { hasCover: true }).errors.join(" "), /cover\.webp/);
 });
 
-test("selectFiles: new project defaults to every image and PDF except the thumbnail", async () => {
+test("selectFiles: never picks files on its own — Alec names every file", async () => {
   const { selectFiles } = await import("../scripts/lib/media-rules.mjs");
-  const found = ["t.jpg", "a.png", "r.pdf", "notes.md", "clip.mp4"];
-  assert.deepEqual(selectFiles({ listed: [], found, thumbnail: "t.jpg", hasCover: false }), { files: ["a.png", "r.pdf"] });
+  const found = ["t.jpg", "a.png", "r.pdf", "draft.png"];
+  assert.match(selectFiles({ listed: [], found, thumbnail: "t.jpg", hasCover: false }).error, /list/i);
+  assert.deepEqual(selectFiles({ listed: ["a.png", "r.pdf"], found, thumbnail: "t.jpg", hasCover: false }), { files: ["a.png", "r.pdf"] });
 });
 
 test("selectFiles: an existing project never sweeps the folder", async () => {

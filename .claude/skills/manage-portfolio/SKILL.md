@@ -18,6 +18,24 @@ in `public/media/<slug>/` and is put there by `npm run media`. Pushing to
 it, said it, or a file makes it unambiguous (a PDF's page count, an image's
 pixels). Everything else is a question for Alec.
 
+## Alec's source folder is read-only
+
+Alec points you at the **original folder his work lives in** — not a copy. It
+is strictly read-only:
+
+- **Never add, edit, move, rename or delete anything in it.** No `mv`, `rm`,
+  `cp` *into* it, `sips` / `cwebp` / `gs` with an output path inside it, no
+  creating notes or temp files there, no `cd` into it to run a command that
+  writes. Reading files and listing it is all.
+- **Only use the files Alec names.** He tells you exactly what to include. The
+  folder may hold drafts and unrelated work — don't open, convert or publish
+  anything he didn't name. If something seems missing, ask; don't go looking.
+- **Conversions run on copies.** `npm run media -- add` and `zip` copy the
+  named files to a temporary staging folder and convert those. Never convert
+  in place, and never bypass `npm run media` with hand-run conversion commands.
+- If a named file is unreadable or a conversion fails, report it. Do not
+  "fix" the source file.
+
 ## Shared rules (every workflow)
 
 1. **Ask, don't guess.** Batch questions into one round per task. Use
@@ -45,13 +63,15 @@ pixels). Everything else is a question for Alec.
 
 ## Add a project
 
-1. **Folder.** Ask for the path if Alec didn't give one. Run
-   `npm run media -- inventory "<dir>"`.
-2. **Read every text/markdown file first.** For each, decide: verbatim page
-   content, or instructions to you? Ask if unclear. Collect web links.
-3. **Thumbnail.** Use the file Alec names, or an obvious one (`thumbnail.*`,
-   `cover.*`). If unclear, ask. If there is none, **stop** — no thumbnail, no
-   project.
+1. **Folder and file list.** Get from Alec the path to his original folder
+   and exactly which files to include. Ask for whichever is missing. Run
+   `npm run media -- inventory "<dir>"` (read-only) only to check that each
+   named file exists and to read its size, pages or aspect. Ignore everything
+   he didn't name.
+2. **Read the named text/markdown files first.** For each, decide: verbatim
+   page content, or instructions to you? Ask if unclear. Collect web links.
+3. **Thumbnail.** Use the file Alec names as the thumbnail. If he didn't name
+   one, ask. If there is none, **stop** — no thumbnail, no project.
 4. **Fields.** New ID: `npm run media -- next-id`. Fill each field in the
    schema (`content-map.md`) from Alec's files, and ask for the rest in one
    round:
@@ -67,19 +87,21 @@ pixels). Everything else is a question for Alec.
      Never put an mp4 on the site;
    - code or other files: confirm zipping them into one download, and its label.
 
-   **Body is required.** If the folder has none, ask Alec for it.
-5. **Media.** `npm run media -- add p-0NN "<dir>" --thumbnail <file> [files…]`
-   (default: every image and PDF). For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`,
-   then show Alec the entry list it prints — check nothing private (`.env`,
-   keys, personal data) is inside before it goes online.
+   **Body is required.** If none of the named files gives it, ask Alec for it.
+5. **Media.** `npm run media -- add p-0NN "<dir>" --thumbnail <file> <named files…>`.
+   Always list the files. It refuses to run without them and never picks up
+   anything on its own. For code: `npm run media -- zip p-0NN "<dir>" --name "<label>" <paths…>`,
+   then show Alec the entry list it prints. Hidden files such as `.env` are
+   skipped automatically; still check nothing private (keys, personal data) is
+   inside before it goes online.
    It refuses videos, unknown types and name collisions. Fix the cause, never
    bypass it.
 6. **Entry.** Add a `project({...})` to `ENTRIES` in `content.js`, placed by
    date (newest first). Use the manifest keys `add` printed for `file:`.
    Convert the body per `markdown-to-body.md`. Videos with 4:3 aspect (see
    inventory) get `aspect: "4 / 3"`.
-7. **Handover checklist.** Every file in the folder, one row each. No file may
-   be missing from it:
+7. **Checklist.** Every file Alec named, one row each, showing where it went.
+   No named file may be missing from it:
 
    | File | Kind | Went to | Notes |
    | --- | --- | --- | --- |
@@ -88,7 +110,7 @@ pixels). Everything else is a question for Alec.
    | `clip.mp4` | video | YouTube embed | link from Alec |
 
 8. **Verify, preview, publish, confirm** (rules 3–6), including the home page
-   if starred. Then tell Alec the folder is safe to delete.
+   if starred. Report that Alec's folder was only read, never written to.
 
 ## Star / unstar
 
@@ -110,7 +132,8 @@ card automatically. Preview the home page, then publish.
 ## Edit anything else
 
 Find the field in `content-map.md`, change it, show before/after, publish on
-go. Media changes on an existing project always name their files:
+go. Media changes on an existing project always name their files, and the
+source folder stays read-only:
 `media add p-0NN "<dir>" <file>` adds a figure or report (re-adding the same
 source name replaces it); `media add p-0NN "<dir>" --thumbnail <file>` with no
 other files replaces only the card thumbnail; `media remove p-0NN "<manifest key>"`
@@ -126,7 +149,9 @@ the static description in `index.html` for stale wording (e.g. "fourth-year").
 | Reusing a retired ID, or renumbering after a delete | `next-id` only; never touch other IDs. |
 | Serving an mp4 or GIF from `public/` | YouTube link only. |
 | Proceeding without a thumbnail | Stop and ask. |
-| Skipping the handover checklist | Alec deletes the folder after; anything unlisted is lost. |
+| Writing anything into Alec's source folder (temp files, converted copies, renames) | It is his original work. Read only; `npm run media` stages copies elsewhere. |
+| Publishing a file Alec didn't name because it was in the folder | Only named files. Ask if something seems missing. |
+| Skipping the checklist | Every named file must show where it went. |
 | Pushing before Alec says go | Preview is a gate, not a courtesy. |
 | Hand-editing `media-manifest.js` / `cover-manifest.js` | Use `npm run media`. |
 | Editing route files for copy that lives in `content.js` | Check `content-map.md` first. |
