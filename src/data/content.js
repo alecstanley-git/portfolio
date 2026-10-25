@@ -100,7 +100,7 @@ const ENTRIES = [
     result: "Thrust rose from 22 to 41 N across the speed range, with TSFC roughly constant at 0.17 kg/N·hr.",
     caveat: "Room temperature rose from 30 to 45 °C during testing, so the tests are not evenly spaced in corrected speed.",
     images: [
-      { file: "02.jpg", caption: "Control panel of the Cussons two-shaft gas turbine rig used in this laboratory." },
+      { file: "02.jpg", caption: "Control panel of the Cussons two-shaft gas turbine rig used in this laboratory, run with its free power turbine bypassed." },
       { file: "fuel-air-ratio.png", caption: "Fuel-air ratio against corrected gas generator speed." },
       { file: "compressor-pressure-ratio.png", caption: "Compressor pressure ratio against corrected gas generator speed." },
       { file: "net-thrust.png", caption: "Net thrust against corrected gas generator speed." },
@@ -162,6 +162,8 @@ const ENTRIES = [
       "Every pressure and temperature in the cycle stays positive, and both jets leave faster than the flight speed. The intake is what limits the engine. At sea level and Mach 1 it would need to carry 2112 kg/s of air, but it chokes at 2051 kg/s, so the extra air would spill around the nacelle.",
     ],
     result: "Found the intake chokes at about Mach 0.85, well before the idealised Mach 1 result.",
+    caveat:
+      "The model assumes the intake captures a stream tube equal to its own area at every flight speed, holds the fan and compressor pressure ratios and efficiencies fixed, and puts no limit on turbine entry temperature, which reaches 1852 K at sea level.",
     images: [
       { file: "engine-schematic.png", caption: "Labelled schematic of a single engine, with both spools and the bypass split marked." },
       { file: "p-v-diagram.png", caption: "P-v diagram of the states and processes inside the engine, not to scale." },
@@ -180,8 +182,8 @@ const ENTRIES = [
       "An n-body gravitational simulator built in C++, with its own physics engine, plotting engine and window manager. The high-distinction project of a first-year programming unit.",
     tags: ["C++", "OOP", "data structures", "physics engine"],
     body: [
-      "The portfolio builds through increasing levels of expertise, with reflections and the code I wrote at each stage. Notable work: memory management, sorting algorithms, procedural and object-oriented programming, and building my own data stores — linked lists, vectors and arrays.",
       "For the high distinction I built an n-body gravitational simulator: a physics engine, a plotting engine and a custom window manager, among other utilities.",
+      "The portfolio builds through increasing levels of expertise, with reflections and the code I wrote at each stage. Notable work: memory management, sorting algorithms, procedural and object-oriented programming, and building my own data stores — linked lists, vectors and arrays.",
     ],
     videos: [
       { caption: "Walkthrough — how to use the simulator", source: "H2_Video.mp4", youtube: "https://youtu.be/tva667XRgrs" },
