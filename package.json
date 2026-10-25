@@ -9,9 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test tests/",
-    "import-assets": "node scripts/import-assets.mjs",
-    "fetch-covers": "node scripts/fetch-covers.mjs",
-    "check-media": "node scripts/check-media.mjs"
+    "check-media": "node scripts/check-media.mjs",
+    "media": "node scripts/media.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.363.0",

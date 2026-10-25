@@ -1,80 +1,66 @@
 # Media
 
-Everything is imported and live. Nothing outstanding.
+Every image, report and download on the site lives in `public/media/<slug>/`
+and is listed in a generated manifest:
 
-| | |
+| File | Holds |
 | --- | --- |
-| Card thumbnails | 17 / 17 imported |
-| Figures | 24 / 24 imported |
-| Reports and files | 18 / 18 imported (17 PDFs + 1 zip) |
-| Videos | 8 / 8 embedded from YouTube |
+| `src/data/media-manifest.js` | Figures, reports and zips: slug → source file name → path (+ size or page count) |
+| `src/data/cover-manifest.js` | Card thumbnails: slug → path and pixel size |
 
-Source of record is the Notion export in Google Drive:
-`My Drive/OLDPORTFOLIO/Alec Stanley/Skills and Projects/`. It is never modified.
+Both are written by `scripts/media.mjs`. Don't edit them by hand.
 
-## Two sources, two scripts
-
-Figures and reports come from the Drive export. **Card thumbnails do not** —
-they are Notion *page covers*, which the Markdown export omits entirely. The CFD
-contour on P-014, the glider photo on P-012 and the CSWA results screen on P-008
-exist nowhere but the live site, so they are fetched from its public API and the
-optimised WebP is committed in case that source goes away.
+## Adding a project's files
 
 ```sh
-npm run import-assets    # figures + reports, from the Drive export
-npm run fetch-covers     # card thumbnails, from the old Notion site
-npm run check-media      # assert every referenced asset resolves
+npm run media -- inventory <dir>                              # what's in the folder
+npm run media -- add p-018 <dir> --thumbnail cover.jpg       # every image + PDF in <dir>
+npm run media -- add p-018 <dir> --thumbnail cover.jpg a.png report.pdf   # or just these
+npm run media -- zip p-018 <dir> --name "Source code" src    # bundle code as one download
+npm run media -- remove p-018 [file]                         # delete a project's media, or one file
+npm run media -- next-id                                     # the next unused project ID
+npm run check-media                                          # assert everything resolves
 ```
 
-`import-assets` is idempotent and safe to re-run; `--force` rebuilds everything.
-It fails loudly if a file named in `content.js` isn't on disk. `check-media`
-also runs in CI before the build, so a broken path can't ship.
+`add` checks the whole set before writing anything. It refuses a missing
+thumbnail, a video, an unrecognised file type, or two files that would end up
+with the same name. In `content.js`, `file:` is the source file name exactly as
+it was handed over. `add` prints the keys to use.
 
-What it does:
+## Conversion rules
 
-- **Images** — anything over 200 KB or wider than 1600px is downscaled to
-  1600px and encoded as WebP q82; smaller PNG line art is copied untouched.
-  8.9 MB → 1.4 MB.
-- **PDFs** — Ghostscript downsamples embedded images to 300 dpi, print grade.
-  The result is only kept if the page count is unchanged *and* it is genuinely
-  smaller; otherwise the original is copied. 71.8 MB → 31.0 MB.
+- **Thumbnail** → `cover.webp`, WebP q80, at most 900px wide. That's enough for
+  a 370px card on a 2× display.
+- **Figures** → WebP, at most 1600px wide. PNG (plots, diagrams, screenshots)
+  is encoded **lossless**, so one-pixel axis lines and tick labels stay sharp.
+  JPEG and HEIC photos use q82.
+- **PDFs** → Ghostscript downsamples embedded images to 300 dpi, print grade.
+  The result is kept only if the page count is unchanged *and* it is genuinely
+  smaller; otherwise the original is copied. 150 dpi was tried once and
+  rejected because it visibly softened matplotlib figures. The Download button
+  serves this copy.
+- **Encrypted PDFs** (e.g. `CSWA_Certificate.pdf`) are copied byte-for-byte.
+  Re-writing them would strip their permission flags.
+- **Zips** are copied as-is. `media zip` builds one from a folder and skips
+  `.DS_Store`, `__MACOSX`, `__pycache__`, `node_modules` and `.git`.
+- **Videos are never served from the site.** Upload to YouTube and set
+  `youtube` on the `videos[]` entry. Add `aspect: "4 / 3"` for 4:3 footage so it
+  isn't pillarboxed; `inventory` reports each video's aspect.
 
-  150 dpi was tried first and rejected: the reports embed matplotlib plots with
-  one-pixel axis lines and small tick labels, and a 6× linear downsample from
-  the ~900 ppi source visibly softened them. At 300 dpi the figures are
-  indistinguishable from the originals. Body text is vector throughout and was
-  never affected either way.
+All output names are lowercase and hyphenated. GitHub Pages is case-sensitive
+and macOS is not, so a stray capital would work locally and 404 in production.
 
-  Note the **Download button serves this copy, not the original** — the
-  originals live only in the Drive export.
-- **`CSWA_Certificate.pdf` is deliberately not compressed.** It is encrypted
-  with `change:no`, and re-writing it through Ghostscript would strip that
-  restriction. It is copied byte-for-byte.
-- **Card thumbnails** — WebP q80 at 900px wide, enough for a 370px card on a
-  2× display. 7.0 MB → 0.7 MB.
-- **Videos are never imported** — 271 MB, two of them over 115 MB.
+## Checks
 
-## Videos
+`npm run check-media` runs in CI before every build. It fails on:
 
-The 8 videos are hosted on YouTube rather than committed — 271 MB in total, two
-of them over 115 MB. Each `videos[]` entry in `content.js` carries a `youtube`
-link; the placeholder slot becomes an embed as soon as that key exists.
+- a missing card thumbnail,
+- a figure or attachment with no file,
+- a file missing on disk or empty,
+- a path with capitals or spaces,
+- an orphaned file under `public/media`,
+- bad project data: a duplicate or malformed ID, a non-ISO date, no tags, or a
+  retired ID that is still live.
 
-Five are 4:3 (the matplotlib animations) and carry `aspect: "4 / 3"` so they
-fill their frame instead of sitting pillarboxed in a 16:9 box. The three screen
-recordings are 16:9 and use the default.
-
-| Project | Source file | Video |
-| --- | --- | --- |
-| P-017 | `H2_Video.mp4` | H2 Video |
-| P-017 | `H1_Video.mp4` | H+1 Video |
-| P-013 | `orbit_3d.mp4` | orbit 3d |
-| P-013 | `orbit_xy.mp4` | Orbit XY |
-| P-013 | `orbit_xz.mp4` | orbit xz |
-| P-013 | `orbit.mp4` | orbit |
-| P-011 | `spacecraft_animation_20fps_100s.mp4` | spacecraft animation 20fps 100s |
-| P-011 | `malaysian_airlines_10fps_40s.mp4` | airliner 10fps 40s |
-
-To swap a link, edit the `youtube` value on the matching `source` in
-`src/data/content.js`. `npm run check-media` reports how many slots are still
-empty.
+`npm run check-media -- https://alecstanley.com/` also fetches every file from
+the live site.

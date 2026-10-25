@@ -14,57 +14,63 @@ npm install
 npm run dev            # http://localhost:5173
 npm run build          # static site → dist/
 npm run preview        # serve the built site
-npm run check-media    # assert every image and report resolves
-npm run import-assets  # re-import figures/reports from the Notion export (needs Drive + ghostscript)
-npm run fetch-covers   # re-fetch card thumbnails from the old Notion site
+npm test               # unit tests (node --test, no dependencies)
+npm run check-media    # assert every image and report resolves, and project data is sound
+npm run media -- …     # convert a project's files onto the site — see MEDIA.md
 ```
 
-Node 20 or newer. `import-assets` additionally needs `ghostscript`, `webp` and
-`poppler` (`brew install ghostscript webp poppler`); nothing else does.
-It re-encodes report figures at 300 dpi — the copy a visitor downloads is that
-one, not the Drive original.
+Node 20 or newer. `npm run media` additionally needs `ghostscript`, `webp`,
+`poppler` and `ffmpeg` (`brew install ghostscript webp poppler ffmpeg`);
+nothing else does.
 
 ## Routes
 
 | Path | Page |
 | --- | --- |
 | `/` | Hero, stat rail, four featured projects, approach panel |
-| `/work` | Filterable index of all 17 projects (`?discipline=Aerospace` is linkable) |
-| `/work/:id` | One project: write-up, result, limitation, figures, video, reports |
+| `/work` | Filterable index of every project, newest first (`?discipline=Aerospace` is linkable) |
+| `/work/:id` | One project: write-up, result, limitation, figures, video, reports. A retired ID shows a "retired" notice |
 | `/about` | Bio, education and work timeline, three skill groups |
 | `/contact` | Contact facts, CV download, availability |
 
 Project URLs use the lowercase project code — `/work/p-013` is the galaxy
-collision simulation. Codes are stable, so links keep working.
+collision simulation. Codes are permanent: never reused, never renumbered. A
+deleted project's code goes into `RETIRED_IDS`, so its old link explains itself.
 
 ## Editing content
 
-**`src/data/content.js` is the only file to touch for content.** It holds the
-profile, all 17 projects, the timeline, skills and interests. Adding a project
-means adding one entry — `id` drives the URL, and a `featured: true` flag puts it
-on the home page and gives its card the ignition top rule.
+Day to day, ask Claude: the `manage-portfolio` skill in
+`.claude/skills/manage-portfolio/` adds, edits, stars and retires projects and
+changes any page copy, previews it, and publishes on your go. The CV has its
+own skill, `update-cv`.
 
-Asset URLs are **not** written by hand. `npm run import-assets` copies files out
-of the Notion export in Google Drive into `public/media/<project>/`, optimises
-them, and records what it produced in `src/data/media-manifest.js`. The
+Under the hood, **`src/data/content.js` is the only file to touch for
+content.** It holds the profile, every page's copy (`HOME`, `WORK`, `ABOUT`,
+`CONTACT`, `SITE_META`), all projects, the timeline and the study-area chips.
+
+- A project's `id` (`P-###`) drives its URL. `date` is ISO (`2026-06-07`); the
+  list sorts on it, newest first.
+- `starred: true` puts a project on the home page and gives its card the
+  ignition top rule. An odd number of starred projects centres the last card.
+- `body` items are paragraphs (with `**bold**`, `*italic*`, `[links](…)`),
+  `{ heading }`, `{ list, ordered? }`, or `{ attachment: "file.pdf" }` to place
+  a report mid-write-up.
+
+Asset URLs are **not** written by hand. `npm run media -- add` converts a
+project's files into `public/media/<project>/` and records them in
+`src/data/media-manifest.js` (thumbnails in `cover-manifest.js`); the
 `project()` factory in `content.js` turns that into `src` / `href`. A file
-missing from the manifest simply gets no URL, so the page falls back to its
-labelled placeholder instead of showing a broken image. See **[MEDIA.md](MEDIA.md)**.
+missing from the manifest gets no URL, so the page falls back to its labelled
+placeholder instead of a broken image. See **[MEDIA.md](MEDIA.md)**.
 
-Card thumbnails come from a **different source** and have their own script.
-They are Notion *page covers*, which the Markdown export does not include at
-all — several exist nowhere but the live site. `npm run fetch-covers` pulls them
-from the old portfolio's public API into `cover-manifest.js`. The optimised
-output is committed, because that source could disappear.
+Videos are on YouTube rather than committed; each entry carries a `youtube`
+link.
 
-Videos are on YouTube rather than committed (271 MB in total); each entry
-carries a `youtube` link.
-
-**If the site moves to a custom domain**, update the absolute URLs in
-`index.html` — `og:url`, `og:image`, `twitter:image` and `<link rel="canonical">`
-are hardcoded to the GitHub Pages address. They have to be absolute because
-link-preview scrapers do not resolve relative paths, and static because most
-do not run JavaScript, so the router cannot set them per route.
+**If the site moves domain**, update the absolute URLs in `index.html` —
+`og:url`, `og:image`, `twitter:image` and `<link rel="canonical">`. They have to
+be absolute because link-preview scrapers do not resolve relative paths, and
+static because most do not run JavaScript, so the router cannot set them per
+route.
 
 ## Design system
 
@@ -96,8 +102,7 @@ and then renders a single unscrollable page.
 
 The system's own rules — voice, casing, the ~5% accent budget, sequential
 section indices, no emoji — are documented in its `readme.md`. The system lives
-at `.claude/skills/alec-stanley-portfolio-design/` locally but is git-ignored, so
-it is not part of this repo.
+at `.claude/skills/alec-stanley-portfolio-design/`.
 
 **Substitutions inherited from the design system:** fonts are Google Fonts
 stand-ins (Space Grotesk / IBM Plex Sans / JetBrains Mono) and icons are Lucide.
