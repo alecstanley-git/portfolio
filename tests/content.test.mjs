@@ -1,29 +1,28 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { PROJECTS, RETIRED_IDS, STARRED, findProject, isRetired } from "../src/data/content.js";
-import { validateProjects } from "../src/lib/projects.js";
+import { idNumber, validateProjects } from "../src/lib/projects.js";
 
-test("projects are listed newest first, in today's order", () => {
-  assert.deepEqual(
-    PROJECTS.map((p) => p.id),
-    [
-      "P-017", "P-016", "P-015", "P-014", "P-013", "P-012", "P-011", "P-010", "P-009",
-      "P-008", "P-007", "P-006", "P-005", "P-004", "P-003", "P-002", "P-001",
-    ],
-  );
+test("projects are listed newest first, same-date ties to the higher ID", () => {
+  for (let i = 1; i < PROJECTS.length; i++) {
+    const [a, b] = [PROJECTS[i - 1], PROJECTS[i]];
+    const ok = a.date > b.date || (a.date === b.date && idNumber(a.id) > idNumber(b.id));
+    assert.ok(ok, `${a.id} (${a.date}) should not come before ${b.id} (${b.date})`);
+  }
 });
 
-test("starred projects are the four featured today", () => {
+test("starred lists exactly the starred projects, in list order", () => {
   assert.deepEqual(
     STARRED.map((p) => p.id),
-    ["P-014", "P-013", "P-011", "P-009"],
+    PROJECTS.filter((p) => p.starred).map((p) => p.id),
   );
 });
 
 test("display date and year are derived from the ISO date", () => {
-  const p = findProject("p-017");
-  assert.equal(p.displayDate, "June 7, 2026");
-  assert.equal(p.year, "2026");
+  for (const p of PROJECTS) {
+    assert.equal(p.year, p.date.slice(0, 4), p.id);
+    assert.match(p.displayDate, /^[A-Z][a-z]+ \d{1,2}, \d{4}$/, p.id);
+  }
 });
 
 test("project data passes validation", () => {

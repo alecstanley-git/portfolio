@@ -33,6 +33,8 @@ pixels). Everything else is a question for Alec.
 4. **Preview, then stop.** Visual changes: run `npm run dev` and screenshot the
    affected pages (desktop width; also check phone width if layout changed).
    Text-only edits: show the before/after text. Then wait for Alec's go.
+   Figures load lazily and PDF rows only open on a real click, so scroll and
+   click rather than judging from a script.
 5. **Publish only on Alec's go.** Must be on `main`. Stage only the files this
    task touched, commit (with the session's attribution trailer), then
    `git push origin main`. Never force-push. If not on `main` or the push fails,
@@ -97,7 +99,8 @@ card automatically. Preview the home page, then publish.
 1. Confirm with Alec, naming the ID and title.
 2. Delete its `project({...})` entry (this unstars it). Add the ID to
    `RETIRED_IDS`. Run `npm run media -- remove p-0NN`.
-3. `grep -rn -i "p-0NN" src index.html README.md` and fix any mention.
+3. `grep -rn -i "p-0NN" src index.html README.md` and fix any mention other
+   than the new `RETIRED_IDS` entry.
 4. **Never renumber other projects.** IDs are permanent; the gap stays.
 5. Verify (`check-media` must report no orphans), preview home and `/work`, and
    open `/work/p-0NN` to see the retired notice. Then publish.
