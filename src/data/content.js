@@ -18,7 +18,7 @@
  * `src` / `href`. Videos are YouTube links only. See MEDIA.md.
  */
 import { asset } from "../lib/asset.js";
-import { cardBadge, formatDate, isRetiredIn, sortProjects } from "../lib/projects.js";
+import { allTags, cardBadge, formatDate, isRetiredIn, sortProjects } from "../lib/projects.js";
 import MEDIA from "./media-manifest.js";
 import COVERS from "./cover-manifest.js";
 
@@ -450,6 +450,9 @@ const ENTRIES = [
 export const PROJECTS = sortProjects(ENTRIES);
 
 export const DISCIPLINES = [...new Set(PROJECTS.map((p) => p.discipline))].sort();
+
+/** Every project tag, once each (case-insensitive), for the Work page filter. */
+export const TAGS = allTags(PROJECTS);
 
 export const STARRED = PROJECTS.filter((p) => p.starred);
 

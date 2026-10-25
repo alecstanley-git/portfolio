@@ -80,3 +80,23 @@ export function cardBadge({ grade, status }) {
   if (status && status.tone !== "ok") return { label: status.label, tone: status.tone, dot: true };
   return null;
 }
+
+const tagKey = (t) => String(t).trim().toLowerCase();
+
+/** Every tag across the projects, once each ignoring case (the first spelling
+ *  seen wins), sorted for a filter list. */
+export function allTags(projects) {
+  const byKey = new Map();
+  for (const p of projects) for (const t of p.tags || []) if (!byKey.has(tagKey(t))) byKey.set(tagKey(t), t);
+  return [...byKey.values()].sort((a, b) => tagKey(a).localeCompare(tagKey(b)));
+}
+
+/** Projects matching a discipline and/or a tag (case-insensitive). Either may be
+ *  omitted; order is preserved. */
+export function filterProjects(projects, { discipline, tag } = {}) {
+  return projects.filter(
+    (p) =>
+      (!discipline || p.discipline === discipline) &&
+      (!tag || (p.tags || []).some((t) => tagKey(t) === tagKey(tag))),
+  );
+}

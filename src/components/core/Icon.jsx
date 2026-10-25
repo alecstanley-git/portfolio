@@ -24,6 +24,7 @@ import {
   Ruler,
   Send,
   TriangleAlert,
+  X,
   Youtube,
   Zap,
 } from "lucide-react";
@@ -57,6 +58,7 @@ const GLYPHS = {
   ruler: Ruler,
   send: Send,
   "triangle-alert": TriangleAlert,
+  x: X,
   youtube: Youtube,
   zap: Zap,
 };

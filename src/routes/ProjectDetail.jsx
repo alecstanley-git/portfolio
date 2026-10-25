@@ -173,8 +173,11 @@ function Project({ project }) {
           {project.summary}
         </p>
         <div className="cluster">
+          {/* Each tag opens the index filtered to it. */}
           {project.tags.map((t) => (
-            <Tag key={t}>{t}</Tag>
+            <Link key={t} className="tag-link" to={`/work?tag=${encodeURIComponent(t)}`} title={`All projects tagged ${t}`}>
+              <Tag>{t}</Tag>
+            </Link>
           ))}
         </div>
       </header>

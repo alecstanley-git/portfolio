@@ -97,3 +97,24 @@ test("cardBadge: grade first, status only when not complete, else nothing", asyn
   assert.deepEqual(cardBadge({ status: { label: "In progress", tone: "warn" } }), { label: "In progress", tone: "warn", dot: true });
   assert.deepEqual(cardBadge({ grade: "D", status: { label: "In progress", tone: "warn" } }), { label: "D", tone: "accent", dot: false });
 });
+
+const sample = [
+  { id: "P-003", discipline: "Aerospace", tags: ["python", "CFD"] },
+  { id: "P-002", discipline: "Software", tags: ["Python", "C++"] },
+  { id: "P-001", discipline: "Aerospace", tags: ["MATLAB"] },
+];
+
+test("allTags: one entry per tag ignoring case, first spelling wins, sorted", async () => {
+  const { allTags } = await import("../src/lib/projects.js");
+  assert.deepEqual(allTags(sample), ["C++", "CFD", "MATLAB", "python"]);
+});
+
+test("filterProjects by discipline, tag (any case), both, or neither", async () => {
+  const { filterProjects } = await import("../src/lib/projects.js");
+  const ids = (o) => filterProjects(sample, o).map((p) => p.id);
+  assert.deepEqual(ids({}), ["P-003", "P-002", "P-001"]);
+  assert.deepEqual(ids({ tag: "PYTHON" }), ["P-003", "P-002"]);
+  assert.deepEqual(ids({ discipline: "Aerospace", tag: "python" }), ["P-003"]);
+  assert.deepEqual(ids({ discipline: "Aerospace" }), ["P-003", "P-001"]);
+  assert.deepEqual(ids({ tag: "fortran" }), []);
+});
