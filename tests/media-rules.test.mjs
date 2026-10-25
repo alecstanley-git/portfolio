@@ -64,3 +64,9 @@ test("serialiseManifest writes header lines then a default export", () => {
     '// one\n// two\nexport default {\n  "a": {\n    "b": 1\n  }\n};\n',
   );
 });
+
+test("planOutputs: no thumbnail needed when the project already has a cover", () => {
+  const { outputs, errors } = planOutputs(["extra.png"], { hasCover: true });
+  assert.deepEqual(errors, []);
+  assert.deepEqual(outputs, [{ src: "extra.png", out: "extra.webp", kind: "image", lossless: true }]);
+});

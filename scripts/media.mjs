@@ -3,7 +3,7 @@
  * Put a project's files on the site, converted to the site's standards.
  *
  *   npm run media -- inventory <dir>
- *   npm run media -- add <slug> <dir> --thumbnail <file> [files…]
+ *   npm run media -- add <slug> <dir> --thumbnail <file> [files…]   (--thumbnail optional if the project has one)
  *   npm run media -- zip <slug> <dir> --name "<label>" <paths…>
  *   npm run media -- remove <slug> [original-file-name]
  *   npm run media -- next-id
@@ -262,7 +262,8 @@ async function add(args) {
     if (!(await exists(path.join(dir, f)))) die(`Not in ${dir}: ${f}`);
   }
 
-  const { outputs, errors } = planOutputs(files, { thumbnail: flags.thumbnail });
+  // An existing project already has its card thumbnail; adding a figure later needn't resend it.
+  const { outputs, errors } = planOutputs(files, { thumbnail: flags.thumbnail, hasCover: Boolean(COVERS[slug]) });
   if (errors.length) die(`Nothing written:\n  ${errors.join("\n  ")}`);
 
   const outDir = path.join(PUBLIC, "media", slug);

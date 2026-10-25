@@ -16,6 +16,7 @@ Both are written by `scripts/media.mjs`. Don't edit them by hand.
 npm run media -- inventory <dir>                              # what's in the folder
 npm run media -- add p-018 <dir> --thumbnail cover.jpg       # every image + PDF in <dir>
 npm run media -- add p-018 <dir> --thumbnail cover.jpg a.png report.pdf   # or just these
+npm run media -- add p-013 <dir> extra.png                    # add to an existing project (keeps its thumbnail)
 npm run media -- zip p-018 <dir> --name "Source code" src    # bundle code as one download
 npm run media -- remove p-018 [file]                         # delete a project's media, or one file
 npm run media -- next-id                                     # the next unused project ID

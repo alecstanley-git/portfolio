@@ -34,12 +34,12 @@ export function classify(file) {
  * Images become WebP — lossless for PNG (plots and line art keep one-pixel
  * lines sharp), lossy for photos. The thumbnail always becomes `cover.webp`.
  */
-export function planOutputs(files, { thumbnail } = {}) {
+export function planOutputs(files, { thumbnail, hasCover = false } = {}) {
   const outputs = [];
   const errors = [];
   const all = thumbnail && !files.includes(thumbnail) ? [...files, thumbnail] : files;
 
-  if (!thumbnail) errors.push("No thumbnail given. Every project needs one (--thumbnail <file>).");
+  if (!thumbnail && !hasCover) errors.push("No thumbnail given. Every project needs one (--thumbnail <file>).");
 
   for (const src of all) {
     if (src === thumbnail) {
