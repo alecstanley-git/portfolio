@@ -13,7 +13,7 @@ export function ProjectCard({
   summary,
   discipline,
   year,
-  status,
+  badge,
   tags = [],
   image,
   featured = false,
@@ -55,10 +55,11 @@ export function ProjectCard({
           transition: "filter var(--dur-base) var(--ease-standard)",
         }}
       >
-        {/* The status badge carries its meaning in colour, which a bright photo
-            destroys. A short scrim along the top edge keeps it legible over any
-            cover without tinting the image itself. */}
-        {status && image ? (
+        {/* The badge (grade, or a status other than complete) carries its
+            meaning in colour, which a bright photo destroys. A short scrim along
+            the top edge keeps it legible over any cover without tinting the
+            image itself. */}
+        {badge && image ? (
           <span
             aria-hidden="true"
             style={{
@@ -76,12 +77,13 @@ export function ProjectCard({
         {/* Positioned directly, with no wrapper: an absolutely-positioned span
             becomes a block, and its line box left the badge sitting 5px lower
             than its offset — 17px from the top against 12px from the right. */}
-        {status ? (
+        {badge ? (
           <Badge
-            tone={status.tone}
+            tone={badge.tone}
+            dot={badge.dot}
             style={{ position: "absolute", top: "var(--space-3)", right: "var(--space-3)" }}
           >
-            {status.label}
+            {badge.label}
           </Badge>
         ) : null}
       </div>

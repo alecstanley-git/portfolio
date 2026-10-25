@@ -88,3 +88,12 @@ test("isRetiredIn matches IDs by slug, case-insensitively", async () => {
   assert.equal(isRetiredIn("p-006", ["P-005"]), false);
   assert.equal(isRetiredIn(undefined, ["P-005"]), false);
 });
+
+test("cardBadge: grade first, status only when not complete, else nothing", async () => {
+  const { cardBadge } = await import("../src/lib/projects.js");
+  const done = { label: "Complete", tone: "ok" };
+  assert.deepEqual(cardBadge({ grade: "HD", status: done }), { label: "HD", tone: "accent", dot: false });
+  assert.equal(cardBadge({ status: done }), null);
+  assert.deepEqual(cardBadge({ status: { label: "In progress", tone: "warn" } }), { label: "In progress", tone: "warn", dot: true });
+  assert.deepEqual(cardBadge({ grade: "D", status: { label: "In progress", tone: "warn" } }), { label: "D", tone: "accent", dot: false });
+});

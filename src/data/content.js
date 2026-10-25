@@ -18,7 +18,7 @@
  * `src` / `href`. Videos are YouTube links only. See MEDIA.md.
  */
 import { asset } from "../lib/asset.js";
-import { formatDate, isRetiredIn, sortProjects } from "../lib/projects.js";
+import { cardBadge, formatDate, isRetiredIn, sortProjects } from "../lib/projects.js";
 import MEDIA from "./media-manifest.js";
 import COVERS from "./cover-manifest.js";
 
@@ -460,8 +460,8 @@ export function findProject(slug) {
 /** Just what `ProjectCard` renders — spreading a whole project would leak its
  *  data fields onto the link element as HTML attributes. */
 export function cardProps(p) {
-  const { id, title, summary, discipline, year, status, tags, image, starred, slug } = p;
-  return { id, title, summary, discipline, year, status, tags, image, featured: Boolean(starred), to: `/work/${slug}` };
+  const { id, title, summary, discipline, year, tags, image, starred, slug } = p;
+  return { id, title, summary, discipline, year, badge: cardBadge(p), tags, image, featured: Boolean(starred), to: `/work/${slug}` };
 }
 
 export function isRetired(slug) {

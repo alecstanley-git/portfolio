@@ -71,3 +71,12 @@ export function isRetiredIn(slug, retiredIds) {
 export function inlineAttachmentFiles(body = []) {
   return new Set((body || []).filter((b) => b && typeof b === "object" && b.attachment).map((b) => b.attachment));
 }
+
+/** The one badge a project card shows: its grade if it has one, otherwise its
+ *  status unless that is plain "complete" — a badge every card shares says
+ *  nothing. Null means no badge. */
+export function cardBadge({ grade, status }) {
+  if (grade) return { label: grade, tone: "accent", dot: false };
+  if (status && status.tone !== "ok") return { label: status.label, tone: status.tone, dot: true };
+  return null;
+}
