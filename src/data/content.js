@@ -2,20 +2,23 @@
  * All site content lives here. Nothing else needs editing to update the
  * portfolio.
  *
- * Project entries were recovered from the old Notion portfolio; bio, education
- * and employment come from the CV in `public/alec-stanley-cv.pdf`.
+ * Bio, education and employment come from the CV in
+ * `public/alec-stanley-cv.pdf`.
  *
- * Media: `images[].file`, `videos[].source` and `attachments[].file` name the
- * original export filename — that is the record of *what* the asset is. The
- * URL is derived, not written by hand: `npm run import-assets` copies the file
- * out of the Notion export and records it in `media-manifest.js`, and the
- * `project()` factory below turns that into `src` / `href`.
+ * Projects: `id` is a permanent label (`P-###`) and is never reused or
+ * renumbered — a deleted project's ID goes into `RETIRED_IDS`. `date` is ISO
+ * (`YYYY-MM-DD`); the list is sorted by it, newest first, and `year` and
+ * `displayDate` are derived. `starred: true` puts a project on the home page.
  *
- * A file missing from the manifest simply gets no URL, so the page falls back
- * to its labelled placeholder slot. Videos are deliberately not imported — set
- * `youtube` on one by hand once it is uploaded. See MEDIA.md.
+ * Media: `images[].file` and `attachments[].file` name the source file as it
+ * was handed over — that is the record of *what* the asset is. The URL is
+ * derived, not written by hand: `npm run media -- add` converts the file into
+ * `public/media/<slug>/` and records it in `media-manifest.js` (thumbnails in
+ * `cover-manifest.js`), and the `project()` factory below turns that into
+ * `src` / `href`. Videos are YouTube links only. See MEDIA.md.
  */
 import { asset } from "../lib/asset.js";
+import { formatDate, sortProjects } from "../lib/projects.js";
 import MEDIA from "./media-manifest.js";
 import COVERS from "./cover-manifest.js";
 
@@ -51,8 +54,9 @@ const project = (o) => {
     body: [],
     ...o,
     slug,
-    // The card thumbnail. Sourced from the old site's Notion page covers, which
-    // the Markdown export omits entirely — see scripts/fetch-covers.mjs.
+    year: o.date.slice(0, 4),
+    displayDate: formatDate(o.date),
+    // The card thumbnail, recorded in cover-manifest.js.
     image: o.image ?? (cover ? asset(cover.path) : undefined),
     // After the spread, so an explicit `src` / `href` on an entry still wins.
     images: (o.images || []).map((i) => {
@@ -67,13 +71,17 @@ const project = (o) => {
   };
 };
 
-export const PROJECTS = [
+/** IDs of deleted projects. Kept so their IDs are never reused and their old
+ *  URLs show a "retired" notice instead of vanishing. */
+export const RETIRED_IDS = [];
+
+/* Kept in date order here too, for readability; the sort below is what counts. */
+const ENTRIES = [
   project({
     id: "P-017",
     title: "Introduction to Programming — C++ Portfolio",
     discipline: "Software",
-    year: "2026",
-    date: "June 7, 2026",
+    date: "2026-06-07",
     grade: "HD",
     summary:
       "A portfolio-based first-year unit introducing C++. The high-distinction project is an n-body gravitational simulator.",
@@ -96,8 +104,7 @@ export const PROJECTS = [
     id: "P-016",
     title: "Photometric Distance and Age of the Open Cluster NGC 2175",
     discipline: "Astrophysics",
-    year: "2026",
-    date: "May 31, 2026",
+    date: "2026-05-31",
     summary:
       "Determining the age and distance of NGC 2175 using R, V and B band observations from a consumer-grade telescope and computational photometry.",
     tags: ["photometry", "python", "observational astronomy"],
@@ -107,8 +114,7 @@ export const PROJECTS = [
     id: "P-015",
     title: "Viscous Flow Regimes in a Large-Eddy Simulation",
     discipline: "Aerospace",
-    year: "2026",
-    date: "May 31, 2026",
+    date: "2026-05-31",
     summary:
       "Using large-eddy-simulation CFD to investigate flow regimes, boundary layer behaviour, and the turbulent wake behind a NACA0012 airfoil.",
     tags: ["CFD", "LES", "turbulence", "NACA0012"],
@@ -118,9 +124,8 @@ export const PROJECTS = [
     id: "P-014",
     title: "Boundary Layers in Laminar and Turbulent Flow Regimes using CFD",
     discipline: "Aerospace",
-    year: "2026",
-    date: "April 19, 2026",
-    featured: true,
+    date: "2026-04-19",
+    starred: true,
     grade: "HD",
     summary:
       "A comprehensive CFD study of boundary layer properties across three cases: incompressible laminar and turbulent flow over a flat plate, and compressible laminar flow over a 2D cylinder.",
@@ -132,9 +137,8 @@ export const PROJECTS = [
     id: "P-013",
     title: "Galaxy Collision Simulation",
     discipline: "Astrophysics",
-    year: "2025",
-    date: "October 30, 2025",
-    featured: true,
+    date: "2025-10-30",
+    starred: true,
     grade: "HD",
     summary:
       "A python program simulating the collision of two galaxies under Newton's laws of gravitation, modelling the observed collision between M51 and NGC 5195.",
@@ -173,8 +177,7 @@ export const PROJECTS = [
     id: "P-012",
     title: "Aerodynamic Glider Analysis",
     discipline: "Aerospace",
-    year: "2025",
-    date: "October 27, 2025",
+    date: "2025-10-27",
     summary:
       "The Design Build Fly project: my group developed and built a glider to fly as far as possible, with a full aerodynamic report in accompaniment.",
     tags: ["aerodynamics", "design build fly", "team project"],
@@ -184,9 +187,8 @@ export const PROJECTS = [
     id: "P-011",
     title: "Tumbling Rocket — Intermediate Axis Theorem",
     discipline: "Aerospace",
-    year: "2025",
-    date: "October 24, 2025",
-    featured: true,
+    date: "2025-10-24",
+    starred: true,
     grade: "HD",
     summary:
       "A MATLAB simulation of a tumbling rocket in free space, demonstrating the instability of uncontrolled rotation in three dimensions.",
@@ -219,8 +221,7 @@ export const PROJECTS = [
     id: "P-010",
     title: "Rocket Launch Simulation",
     discipline: "Aerospace",
-    year: "2025",
-    date: "October 10, 2025",
+    date: "2025-10-10",
     summary: "Simulation of a single-stage rocket launch using the principles of particle dynamics in python.",
     tags: ["python", "particle dynamics", "drag", "Max-Q"],
     body: [
@@ -250,9 +251,8 @@ export const PROJECTS = [
     id: "P-009",
     title: "Warman Project",
     discipline: "Engineering",
-    year: "2025",
-    date: "May 29, 2025",
-    featured: true,
+    date: "2025-05-29",
+    starred: true,
     summary:
       "A nationally recognised competition to design and build a fully functioning autonomous rover. A rewarding group project spanning coding, electronics and workshop skills.",
     tags: ["Arduino", "C/C++", "laser cutting", "3D printing", "SolidWorks", "electronics"],
@@ -282,8 +282,7 @@ export const PROJECTS = [
     id: "P-008",
     title: "CSWA Certificate",
     discipline: "Engineering",
-    year: "2025",
-    date: "May 21, 2025",
+    date: "2025-05-21",
     summary:
       "Certified SolidWorks Associate — awarded for proven proficiency in 3D CAD modelling, taken as a three-hour exam with a 70% pass mark.",
     tags: ["SolidWorks", "CAD", "certification"],
@@ -294,8 +293,7 @@ export const PROJECTS = [
     id: "P-007",
     title: "Shock Theory in a Supersonic Wind Tunnel",
     discipline: "Aerospace",
-    year: "2024",
-    date: "October 19, 2024",
+    date: "2024-10-19",
     summary: "Demonstrating shock and expansion structures over a wedge airfoil in a supersonic tunnel.",
     tags: ["compressible flow", "shock waves", "wind tunnel"],
     attachments: [{ label: "Full report", file: "WindTunnelReport.pdf" }],
@@ -304,8 +302,7 @@ export const PROJECTS = [
     id: "P-006",
     title: "Stellar Compact Objects",
     discipline: "Astrophysics",
-    year: "2024",
-    date: "October 9, 2024",
+    date: "2024-10-09",
     summary: "Exploring the changing properties of a compact object accreting mass from a binary companion star.",
     tags: ["accretion", "binary systems", "compact objects"],
     attachments: [{ label: "Lab report", file: "lab10_report.pdf" }],
@@ -314,8 +311,7 @@ export const PROJECTS = [
     id: "P-005",
     title: "Stirling Engine Thermodynamic Properties",
     discipline: "Engineering",
-    year: "2024",
-    date: "September 27, 2024",
+    date: "2024-09-27",
     summary: "Explaining variations in Stirling engine effectiveness using thermodynamic theory.",
     tags: ["thermodynamics", "heat engines"],
     attachments: [{ label: "Full report", file: "Report.pdf" }],
@@ -324,8 +320,7 @@ export const PROJECTS = [
     id: "P-004",
     title: "Internal Combustion Engine Thermodynamic Properties",
     discipline: "Engineering",
-    year: "2024",
-    date: "September 27, 2024",
+    date: "2024-09-27",
     summary: "Investigating heat transfer mechanisms in internal combustion engines.",
     tags: ["thermodynamics", "heat transfer", "ICE"],
     attachments: [{ label: "Full report", file: "ICE_Report.pdf" }],
@@ -334,8 +329,7 @@ export const PROJECTS = [
     id: "P-003",
     title: "Properties of Microwaves",
     discipline: "Physics",
-    year: "2024",
-    date: "August 31, 2024",
+    date: "2024-08-31",
     summary: "Exploration of the properties of microwaves, including polarisation, interference and interferometry.",
     tags: ["optics", "interferometry", "waves"],
     attachments: [{ label: "Full report", file: "Report.pdf" }],
@@ -344,8 +338,7 @@ export const PROJECTS = [
     id: "P-002",
     title: "Detecting Extrasolar Planets using the Transit Method",
     discipline: "Astrophysics",
-    year: "2024",
-    date: "May 19, 2024",
+    date: "2024-05-19",
     summary: "Using differential photometry to detect the transit of extrasolar planets in front of distant stars.",
     tags: ["photometry", "exoplanets", "transit method"],
     attachments: [{ label: "Full report", file: "ExtrasolarPlanetsReport.pdf" }],
@@ -354,20 +347,32 @@ export const PROJECTS = [
     id: "P-001",
     title: "Star Characteristics in NGC 2301",
     discipline: "Astrophysics",
-    year: "2024",
-    date: "March 22, 2024",
+    date: "2024-03-22",
     summary: "Using aperture photometry to determine star features including distance, surface temperature and radius.",
     tags: ["aperture photometry", "stellar properties"],
     attachments: [{ label: "Aperture photometry report", file: "AperturePhotometryReport.pdf" }],
   }),
 ];
 
+export const PROJECTS = sortProjects(ENTRIES);
+
 export const DISCIPLINES = [...new Set(PROJECTS.map((p) => p.discipline))].sort();
 
-export const FEATURED = PROJECTS.filter((p) => p.featured);
+export const STARRED = PROJECTS.filter((p) => p.starred);
 
 export function findProject(slug) {
   return PROJECTS.find((p) => p.slug === String(slug || "").toLowerCase());
+}
+
+/** Just what `ProjectCard` renders — spreading a whole project would leak its
+ *  data fields onto the link element as HTML attributes. */
+export function cardProps(p) {
+  const { id, title, summary, discipline, year, status, tags, image, starred, slug } = p;
+  return { id, title, summary, discipline, year, status, tags, image, featured: Boolean(starred), to: `/work/${slug}` };
+}
+
+export function isRetired(slug) {
+  return RETIRED_IDS.some((id) => id.toLowerCase() === String(slug || "").toLowerCase());
 }
 
 export const TIMELINE = [

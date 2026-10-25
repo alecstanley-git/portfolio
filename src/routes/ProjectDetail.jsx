@@ -106,7 +106,7 @@ export default function ProjectDetail() {
         >
           <span style={{ color: "var(--ignition-500)" }}>{project.id}</span>
           <span>{project.discipline}</span>
-          <span>{project.date}</span>
+          <span>{project.displayDate}</span>
           {project.grade ? (
             <Badge tone="accent" dot={false}>
               {project.grade}

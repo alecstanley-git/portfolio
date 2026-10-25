@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { ProjectCard, SectionHeading, Select, Tag } from "../components/index.js";
-import { DISCIPLINES, PROJECTS } from "../data/content.js";
+import { DISCIPLINES, PROJECTS, cardProps } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 export default function Work() {
@@ -49,7 +49,7 @@ export default function Work() {
 
         <div className="grid grid--3">
           {shown.map((p) => (
-            <ProjectCard key={p.id} {...p} to={`/work/${p.slug}`} />
+            <ProjectCard key={p.id} {...cardProps(p)} />
           ))}
         </div>
       </section>

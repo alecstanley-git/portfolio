@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button, Callout, ProjectCard, SectionHeading, StatBlock } from "../components/index.js";
-import { FEATURED, PROFILE, PROJECTS, STUDY_AREAS } from "../data/content.js";
+import { PROFILE, PROJECTS, STARRED, STUDY_AREAS, cardProps } from "../data/content.js";
 import { usePageMeta } from "../lib/usePageMeta.js";
 
 /** Discipline chip that swaps its label for "Major"/"Minor" on hover. Both
@@ -106,8 +106,8 @@ export default function Home() {
             lede="Some of my best work, where I learnt the most."
           />
           <div className="grid grid--2 grid--cap">
-            {FEATURED.map((p) => (
-              <ProjectCard key={p.id} {...p} to={`/work/${p.slug}`} />
+            {STARRED.map((p) => (
+              <ProjectCard key={p.id} {...cardProps(p)} />
             ))}
           </div>
           <Button as={Link} to="/work" variant="ghost" iconRight="arrow-right">

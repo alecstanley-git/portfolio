@@ -14,7 +14,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { PROJECTS } from "../src/data/content.js";
+import { PROJECTS, RETIRED_IDS } from "../src/data/content.js";
+import { validateProjects } from "../src/lib/projects.js";
 import MEDIA from "../src/data/media-manifest.js";
 import COVERS from "../src/data/cover-manifest.js";
 
@@ -33,7 +34,8 @@ const CONTENT_TYPE = {
   ".zip": ["application/zip", "application/x-zip-compressed"],
 };
 
-const fail = [];
+// Data problems (bad IDs or dates, missing tags, a retired ID still live) first.
+const fail = [...validateProjects(PROJECTS, RETIRED_IDS)];
 let images = 0;
 let attachments = 0;
 let videoSlots = 0;
