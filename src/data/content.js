@@ -40,7 +40,7 @@ export const PROFILE = {
   intro:
     "I'm in my fourth year of a five-year Bachelor of Engineering (Honours) and Bachelor of Science at Monash University, specialising in aerospace engineering and astrophysics. This is a collection of the technical projects I've worked on over the last few years.",
   seeking:
-    "Currently looking for undergraduate internship roles in engineering design, simulation, and testing for the 2026/2027 break.",
+    "I'm entering my final year in 2027 and I'm keen to find part-time engineering work in design, simulation and testing alongside my studies.",
 };
 
 const project = (o) => {
